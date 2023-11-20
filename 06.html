@@ -1,0 +1,871 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <meta name="mobile-web-app-capable" content="yes">
+
+		<title>Алгоритмизация и Программирование</title>
+
+		<link rel="stylesheet" href="dist/reset.css">
+		<link rel="stylesheet" href="dist/reveal.css">
+		<link rel="stylesheet" href="dist/theme/white.css">
+        <link rel="stylesheet" href="">
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="plugin/highlight/monokai.css">
+
+        <style>
+            .reveal .slides section .fragment.step-fade-in-then-out {
+                opacity: 0;
+                display: none;
+                }
+            .reveal .slides section .fragment.step-fade-in-then-out.current-fragment {
+                opacity: 1;
+                display: inline;
+                }
+            #inc {
+                display: inline-block;
+                border: 1px white solid;
+                border-radius: 2rem;
+                padding: 0 20px
+            }
+            .bval {
+                font-weight: 500;
+            }
+            #bl {
+                display: inline-block;
+                padding-left: 2em;
+            }
+            table.stack {
+                margin-bottom: 1em;
+            }
+            table.stack, table.stack tr td {
+              border: 1px solid;
+              border-collapse: collapse;
+            }
+            table.stack tr td {
+                min-width: 6rem;
+                height: 4rem;
+            }
+            #stackMP{
+                width: 3rem;
+            }
+            .stackBut {
+                display: inline-block;
+                border: 1px white solid;
+                border-radius: 2rem;
+                padding: 0 20px
+            }
+            input {
+                height: 2rem;
+                font: inherit;
+                vertical-align: baseline;
+            }
+            #binTableCalc {
+                font-size: 1.2rem;
+            }
+            #binTableCalc td.red {
+                color:red;
+            }
+            #binTableCalc td.rb {
+                border-right: 1px solid white;
+            }
+            #binTableCalc td.bb {
+                border-right: 1px solid white;
+                border-left: 1px solid white;
+            }
+            #binTableCalc td {
+                width: 2em;
+                text-align: center;
+            }
+            .over {
+                background-color:white;
+                color: black
+            }
+            table.accountTable td {
+                text-align: center;
+            }
+            table.accountTable > thead > tr > td,
+            table.accountTable > tbody > tr > td {
+                border-bottom: 0;
+                border-left: 1px solid white;
+                border-right: 1px solid white;
+            }
+            table.accountTable table td {
+                border: 1px solid black;
+            }
+            .reveal .accountTable table {
+                margin: 0;
+            }
+            table.accountTable td.to_left {
+                text-align: left;
+            }
+            .accountTable .red {
+                color:red;
+            }
+            .accountTable .green {
+                color:green;
+            }
+            .accountTable .greenCell {
+                background-color:green;
+                min-width:20px;
+            }
+            .accountTable .lightGreenCell {
+                background-color:lightgreen;
+                min-width:20px;
+            }
+            
+            
+            
+            
+        </style>
+	</head>
+	<body>
+        <div class="reveal">
+            <div class="slides">
+                <section>
+                    <h3>Алгоритмизация и Программирование</h3>
+                    <div>&nbsp;</div>
+                    <h4>Морозов Владимир Игоревич</h4>
+                </section>
+                <section>
+                    <h4>Амортизационный анализ</h4>
+                </section>
+                <section>
+                    <section>
+                        <h4>Постановка проблемы</h4>
+                        <ul>
+                            <li>При работе со структурами данных иногда возникает необходимость оценить временную сложность выполнения $n$ операций</li>
+                            <li>Это может быть последовательность разных операций с одной структурой или одна операция, временная сложность которой зависит от некоторых условий</li>
+                            <li>В таких случаях бывает недостаточно оценить временную сложность худшего случая для каждой из операций</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Амортизационный анализ</h4>
+                        <ul>
+                            <li>Амортизационный анализ – подход, который позволяет оценить среднюю стоимость каждой операции в данной последовательности</li>
+                            <li>Пусть есть $n$ операций, сложность каждой из кторых – $T_i(N)$</li>
+                            <li>Амортизационный анализ позволяет получить <b>амортизированную</b> сложность каждой из этих операций $T_i^*(N)$</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Амортизационный анализ</h4>
+                        <ul>
+                            <li>При этом будет выполняться:</li>
+                            $$\sum_{i = 1}^{n}T_i(N) \leqslant \sum_{i = 1}^{n}T_i^*(N)$$
+                            <li>То есть амортизированная временная сложность последовательности операций будет верхней оценкой реальной сложности этой последовательности</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Наивный пример</h4>
+                        <ul>
+                            <li>Пусть есть последовательность операций с номерами $1, 2, ..., 5$</li>
+                            <li>При этом реальные сложности этих операций $T_i = 1, 5, 4, 2, 3$</li>
+                            <li>Амортизационный анализ позволяет получить <b>амортизированную</b> сложность каждой из этих операций $T_i^* = 3$</li>
+                            <li>Тогда сложность всей последовательности операций останется равной $15$</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Графический пример</h4>
+                        <div style="width: 50%;float: left;">
+                            Реальная сложность
+                            <p>
+                                <img src="06/histogram_real.png">
+                            </p>
+                        </div>
+                        <div style="width: 50%;float: right;">
+                            Амортизированная
+                            <p>
+                                <img src="06/histogram_amortized.png">
+                            </p>
+                        </div>
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h4>Динамический массив</h4>
+                        <ul>
+                            <li>Динамический массив – структура данных, представляющая собой последовательно расположенные в памяти ячейки</li>
+                            <li>Динамический, потому что поддерживает добавление элемента в конец</li>
+                            <li>Динамический массив характеризуется двумя параметрами – количеством элементов $size$ и ёмкостью $num$</li>
+                            <li>Ёмкость показывает, сколько свободных ячеек осталось в массиве</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Динамический массив</h4>
+                        <p>
+                            <img src="06/dynamic_array.png">
+                        </p>
+                    </section>
+                    <section>
+                        <h4>Описание рисунка</h4>
+                        <ul>
+                            <li>На рисунке представлен динамический массив с размером $3$ и ёмкостью $5$</li>
+                            <li>Его элементы расположены в памяти последовательно, но после них могут идти ещё какие-то произвольные данные</li>
+                            <li>Покажем, что будет при добавлении в массив элемента $2$</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Добавление элемента</h4>
+                        <p>
+                            <img src="06/dynamic_appended.png" height="50%" width="50%">
+                        </p>
+                    </section>
+                    <section>
+                        <h4>Описание рисунка</h4>
+                        <ul>
+                            <li>Как видно, после добавления ещё одного элемента массив не сможет вместить больше</li>
+                            <li>В таком случае при добавлении нового элемента происходит следующее:
+                                <ol>
+                                    <li>В памяти выделяется новое место, вдвое большее данного массива</li>
+                                    <li>Все элементы массива копируются на новое место</li>
+                                    <li>Новый элемент добавляется в этот массив</li>
+                                </ol>
+                            </li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Расширение массива</h4>
+                        <p>
+                            <img src="06/dynamic_moved.png" height="70%" width="70%">
+                        </p>
+                    </section>
+                    <section>
+                        <h4>Интуитивный анализ</h4>
+                        <ul>
+                            <li>Проанализируем сложность выполнения $n$ вставок в массив</li>
+                            <li>В худшем случае вставка приводит к расширению массива, что происходит со сложностью $O(N)$</li>
+                            <li>Тогда, если мы вставим в массив $N$ элементов по одному, сложность такой последовательности вставок должна составить $N \cdot O(N) = O(N^2)$</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Интуитивный анализ</h4>
+                        <ul>
+                            <li>Мы получили так называемую <b>пессимистическую оценку</b> сложности</li>
+                            <li>Если поподробнее рассмотреть работу операции вставки, можно увидеть, что расширение происходит довольно редко</li>
+                            <li>Покажем, как можно улучшить оценку с помощью методов амортизационного анализа</li>
+                        </ul>
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h4>Методы</h4>
+                        <ul>
+                            <li>Амортизационный анализ можно проводить тремя методами:
+                                <ol>
+                                    <li>Групповой анализ</li>
+                                    <li>Метод бухгалтерского учёта</li>
+                                    <li>Метод потенциалов</li>
+                                </ol>
+                            </li>
+                            <li>Все три метода позволяют получить одни и те же оценки разными способами</li>
+                        </ul>
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h4>Групповой анализ</h4>
+                        <ul>
+                            <li>В ходе <b>группового анализа</b> оценивается наихудшая сложность $T(N)$ последовательности из $n$ операций</li>
+                            <li>После этого в качестве амортизированной сложности одной операции берётся $$\frac{T(N)}{n}$$</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Динамический массив</h4>
+                        <ul>
+                            <li>Проаналилируем сложность вставки $N$ элементов в динамический массив за $n = N$ операций</li>
+                            <li>Элементарная вставка элемента (без расширения) выполняется $N$ раз за $O(1)$</li>
+                            <li>Расширение происходит $\lfloor log_2N \rfloor$ раз за $O(2^j)$, где $j$ – порядковый номер расширения</li>
+                            <li>Посчитаем отдельно сложности последовательностей этих операций</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Динамический массив</h4>
+                        <p align="left">
+                            $N$ элементарных вставок: $\sum_{i = 1}^{N}O(1) = O(N)$
+                        </p>
+                        <p align="left">
+                            $\lfloor log_2N \rfloor$ расширений: $$\sum_{j = 1}^{\lfloor log_2N \rfloor}2^j = \frac{2(2^{log_2N} - 1)}{2 - 1} = 2N - 2 = O(N)$$
+                        </p>
+                    </section>
+                    <section>
+                        <h4>Амортизированная сложность вставки</h4>
+                        <ul>
+                            <li>Таким образом, для $N$ вставок получим суммарную сложность $O(N) + O(N) = O(N)$</li>
+                            <li>Тогда амортизированная сложность одной операции вставки равна $\frac{O(N)}{n = N} = O(1)$</li>
+                        </ul>
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h4>Метод бухгалтерского учёта</h4>
+                            <ul>
+                                <li>Каждой операции присваивается <b>стоимость</b> в виде некоторой суммы условных "денег"</li>
+                                <li>Также за каждую операцию <b>начисляется</b> некоторая сумма условных "денег"</li>
+                                <li>Если операция стоит меньше, чем за неё начислилось, оставшиеся "деньги" идут на <b>счёт</b></li>
+                                <li>Если операция стоит больше, чем за неё начислилось, недостающие "деньги" списываются со <b>счёта</b></li>
+                            </ul>
+                    </section>
+                    <section>
+                        <h4>Метод бухгалтерского учёта</h4>
+                            <ul>
+                                <li>Стоимость операции берётся равной её реальной сложности</li>
+                                <li>Если при таком условии удаётся подобрать фиксированный размер начислений так, чтобы баланс всегда оставался неотрицательным, этот рамер начислений принимается за амортизированную стоимость операции</li>
+                            </ul>
+                    </section>
+                    <section>
+                        <h4>Динамический массив</h4>
+                            <ul>
+                                <li>Подберём размер начислений для операции вставки в динамический массив</li>
+                                <li>Сначала определим стоимости:
+                                    <ul>
+                                        <li>Элементарная вставка будет стоить $1$</li>
+                                        <li>Расширение будет стоить $i$ на $i$-ой операции вставки</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                    </section>
+                    <section>
+                        <h4>Подбор размера начислений</h4>
+                            <ul>
+                                <li>Для проверки корректности подобранного значения построим таблицу, где:</li>
+                                <li>
+                                    <ul>
+                                        <li>$charge$ – размер начисления за операцию</li>
+                                        <li>$C_i$ – стоимость текущей операции</li>
+                                        <li>$\Delta B$ – изменение баланса</li>
+                                        <li>$B$ – текущий баланс</li>
+                                    </ul>
+                                </li>
+                                <li>Возьмём размер начислений равным $1$</li>
+                            </ul>
+                    </section>
+                    <section>
+                        <h4>Проверка с $1$</h4>
+                        <table class="accountTable">
+                            <thead>
+                            <tr>
+                                <td>i</td>
+                                <td>op</td>
+                                <td>result</td>
+                                <td>charge</td>
+                                <td>$C_i$</td>
+                                <td>$\Delta B$</td>
+                                <td>$B$</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>0</td>
+                                <td>append(6)</td>
+                                <td class="to_left">
+                                    <table>
+                                        <tr>
+                                            <td class="greenCell">6</td>
+                                            <td class="lightGreenCell"></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td>1</td>
+                                <td>2</td>
+                                <td class="red">-1</td>
+                                <td class="red">-1</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </section>
+                    <section>
+                        <h4>Подбор размера начислений</h4>
+                            <ul>
+                                <li>Как видно, мы "обанкротились" после первой же операции вставки</li>                     
+                                <li>Возьмём размер начислений равным $2$</li>
+                            </ul>
+                    </section>
+                    <section>
+                        <h4>Проверка с $2$</h4>
+                        <table class="accountTable">
+                            <thead>
+                            <tr>
+                                <td>i</td>
+                                <td>op</td>
+                                <td>result</td>
+                                <td>charge</td>
+                                <td>$C_i$</td>
+                                <td>$\Delta B$</td>
+                                <td>$B$</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>0</td>
+                                <td>append(6)</td>
+                                <td class="to_left">
+                                    <table>
+                                        <tr>
+                                            <td class="greenCell">6</td>
+                                            <td class="lightGreenCell"></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td>2</td>
+                                <td>2</td>
+                                <td class="red">-</td>
+                                <td class="red">0</td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>append(2)</td>
+                                <td class="to_left">
+                                    <table>
+                                        <tr>
+                                            <td class="greenCell">6</td>
+                                            <td class="greenCell">2</td>
+                                            <td class="lightGreenCell"></td>
+                                            <td class="lightGreenCell"></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td>2</td>
+                                <td>3</td>
+                                <td class="red">-1</td>
+                                <td class="red">-1</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </section>
+                    <section>
+                        <h4>Подбор размера начислений</h4>
+                            <ul>
+                                <li>Теперь "банкротство" настигло нас после второй операции вставки</li>                     
+                                <li>Возьмём размер начислений равным $3$</li>
+                            </ul>
+                    </section>
+                    <section>
+                        <h4>Проверка с $3$</h4>
+                        <table class="accountTable" style="font-size: 16px">
+                            <thead>
+                            <tr>
+                                <td>i</td>
+                                <td>op</td>
+                                <td>result</td>
+                                <td>charge</td>
+                                <td>$C_i$</td>
+                                <td>$\Delta B$</td>
+                                <td>$B$</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>0</td>
+                                <td>append(6)</td>
+                                <td class="to_left">
+                                    <table>
+                                        <tr>
+                                            <td class="greenCell">6</td>
+                                            <td class="lightGreenCell"></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td>3</td>
+                                <td>2</td>
+                                <td class="green">+1</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>append(2)</td>
+                                <td class="to_left">
+                                    <table>
+                                        <tr>
+                                            <td class="greenCell">6</td>
+                                            <td class="greenCell">2</td>
+                                            <td class="lightGreenCell"></td>
+                                            <td class="lightGreenCell"></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td>3</td>
+                                <td>2</td>
+                                <td class="">-</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>append(8)</td>
+                                <td class="to_left">
+                                    <table>
+                                        <tr>
+                                            <td class="greenCell">6</td>
+                                            <td class="greenCell">2</td>
+                                            <td class="greenCell">8</td>
+                                            <td class="lightGreenCell"></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td>3</td>
+                                <td>1</td>
+                                <td class="green">+2</td>
+                                <td>3</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>append(1)</td>
+                                <td class="to_left">
+                                    <table>
+                                        <tr>
+                                            <td class="greenCell">6</td>
+                                            <td class="greenCell">2</td>
+                                            <td class="greenCell">8</td>
+                                            <td class="greenCell">1</td>
+                                            <td class="lightGreenCell"></td>
+                                            <td class="lightGreenCell"></td>
+                                            <td class="lightGreenCell"></td>
+                                            <td class="lightGreenCell"></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td>3</td>
+                                <td>5</td>
+                                <td class="red">-2</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>append(3)</td>
+                                <td class="to_left">
+                                    <table>
+                                        <tr>
+                                            <td class="greenCell">6</td>
+                                            <td class="greenCell">2</td>
+                                            <td class="greenCell">8</td>
+                                            <td class="greenCell">1</td>
+                                            <td class="greenCell">3</td>
+                                            <td class="lightGreenCell"></td>
+                                            <td class="lightGreenCell"></td>
+                                            <td class="lightGreenCell"></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td>3</td>
+                                <td>1</td>
+                                <td class="green">+2</td>
+                                <td>3</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>append(4)</td>
+                                <td class="to_left">
+                                    <table>
+                                        <tr>
+                                            <td class="greenCell">6</td>
+                                            <td class="greenCell">2</td>
+                                            <td class="greenCell">8</td>
+                                            <td class="greenCell">1</td>
+                                            <td class="greenCell">3</td>
+                                            <td class="greenCell">4</td>
+                                            <td class="lightGreenCell"></td>
+                                            <td class="lightGreenCell"></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td>3</td>
+                                <td>1</td>
+                                <td class="green">+2</td>
+                                <td>5</td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td>append(7)</td>
+                                <td class="to_left">
+                                    <table>
+                                        <tr>
+                                            <td class="greenCell">6</td>
+                                            <td class="greenCell">2</td>
+                                            <td class="greenCell">8</td>
+                                            <td class="greenCell">1</td>
+                                            <td class="greenCell">3</td>
+                                            <td class="greenCell">4</td>
+                                            <td class="greenCell">7</td>
+                                            <td class="lightGreenCell"></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td>3</td>
+                                <td>1</td>
+                                <td class="green">+2</td>
+                                <td>7</td>
+                            </tr>
+                            <tr>
+                                <td>7</td>
+                                <td>append(2)</td>
+                                <td class="to_left">
+                                    <table>
+                                        <tr>
+                                            <td class="greenCell">6</td>
+                                            <td class="greenCell">2</td>
+                                            <td class="greenCell">8</td>
+                                            <td class="greenCell">1</td>
+                                            <td class="greenCell">3</td>
+                                            <td class="greenCell">4</td>
+                                            <td class="greenCell">7</td>
+                                            <td class="greenCell">2</td>
+                                            <td class="lightGreenCell"></td>
+                                            <td class="lightGreenCell"></td>
+                                            <td class="lightGreenCell"></td>
+                                            <td class="lightGreenCell"></td>
+                                            <td class="lightGreenCell"></td>
+                                            <td class="lightGreenCell"></td>
+                                            <td class="lightGreenCell"></td>
+                                            <td class="lightGreenCell"></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td>3</td>
+                                <td>9</td>
+                                <td class="red">-6</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>...</td>
+                                <td>...</td>
+                                <td>...</td>
+                                <td>...</td>
+                                <td>...</td>
+                                <td>...</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>...</td>
+                                <td>...</td>
+                                <td>...</td>
+                                <td>...</td>
+                                <td>...</td>
+                                <td>...</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>...</td>
+                                <td>...</td>
+                                <td>...</td>
+                                <td>...</td>
+                                <td>...</td>
+                                <td>...</td>
+                                <td>...</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </section>
+                    <section>
+                        <h4>Подбор размера начислений</h4>
+                            <ul>
+                                <li>Видим, что даже для $8$ операций вставки баланс остался положительным</li>                     
+                                <li>Следовательно, $3$ – размер начислений, который нам нужен</li>
+                                <li>К такому размеру можно прийти путём логических рассуждений: на каждый вставленный элемент нам нужен запас:
+                                    <ul>
+                                        <li>$1$ на саму вставку</li>                     
+                                        <li>$1$ на его перенесение при расширении</li>
+                                        <li>$1$ на перенесение одного элемента из предыдущей половины при расширении</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                    </section>
+                    <section>
+                        <h4>Вывод</h4>
+                            <ul>
+                                <li>Если нам удалось подобрать такой размер начислений, чтобы баланс всегда оставался положительным, можем считать этот размер амортизированной стоимостью операции вставки</li>                     
+                                <li>$3 = O(1)$</li>
+                            </ul>
+                    </section>
+                    <section>
+                        <h4>Формализация</h4>
+                            <ul>
+                                <li>Представим метод бухгалтерского учёта более формально</li>                     
+                                <li>Пусть $c_i$ – реальная стоимость $i$-ой операции, а $\hat{c}_i$ – её амортизированная стоимость</li>
+                                <li>Тогда суммарная амортизированная стоимость последовательности операций должна быть верхней границей её суммарной реальной стоимости: $\forall n: \sum_{i = 1}^n\hat{c}_i \geqslant \sum_{i = 1}^nc_i$</li>                                
+                            </ul>
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h4>Метод потенциалов</h4>
+                            <ul>
+                                <li>Метод потенциалов очень похож на метод бухгалтерского учёта</li>
+                                <li>С каждым из возможных состояний структуры данных связывается понятие <b>потенциала</b>, выражающего "потенциальную энергию", накопленную структурой</li>
+                                <li>"Лёгкие" операции накапливают потенциальную энергию</li>
+                                <li>"Тяжёлые" операции тратят её</li>
+                            </ul>
+                    </section>
+                    <section>
+                        <h4>Формализация</h4>
+                            <ul>
+                                <li>Пусть $D_0$ – изначальное состояние структуры данных, а $D_i$ – её состояние после выполнения $i$-ой операции</li>
+                                <li>Пусть также есть функция потенциала $\Phi$, отображающая $D_i$ на некоторое число $\Phi(D_i) \in \R$ – потенциал</li>
+                                <li>Тогда амортизированная стоимость $i$-ой операции равна: $$\hat{c}_i = c_i + \Phi(D_i) - \Phi(D_{i - 1})$$</li>
+                            </ul>
+                    </section>
+                    <section>
+                        <h4>Формализация</h4>
+                            <ul>
+                                <li>Как и в методе бухгалтерского учёта, амортизированная суммарная сложность последовательности операций должна быть верхней границей реальной суммарной сложности</li>
+                                <li>Таким образом, нам снова нужно, чтобы: $\forall n: \sum_{i = 1}^n\hat{c}_i \geqslant \sum_{i = 1}^nc_i$</li>
+                            </ul>
+                    </section>
+                    <section>
+                        <h4>Формализация</h4>
+                            <ul>
+                                <li>Подставим формулу для для амортизированной стоимости в левую часть: $$\sum_{i = 1}^n\hat{c}_i = \sum_{i = 1}^n(c_i + \Phi(D_i) - \Phi(D_{i - 1})) =$$ $$= \sum_{i = 1}^n c_i + \Phi(D_0) - \Phi(D_n)$$</li>
+                            </ul>
+                    </section>
+                    <section>
+                        <h4>Формализация</h4>
+                            <ul>
+                                <li>Вернём результат в условие: $$\forall n: \sum_{i = 1}^n c_i + \Phi(D_0) - \Phi(D_n) \geqslant \sum_{i = 1}^nc_i$$</li>
+                                <li>Чтобы это выполнялось, необходимо: $$\forall n: \Phi(D_0) - \Phi(D_n) \geqslant 0$$</li>
+                            </ul>
+                    </section>
+                    <section>
+                        <h4>Интерпретация</h4>
+                            <ul>
+                                <li>Таким образом, нам нужно подобрать функцию потенциала так, чтобы разность потенциалов никогда не была меньше $0$</li>
+                                <li>Подберём такую функцию для динамического массива</li>
+                            </ul>
+                    </section>
+                    <section>
+                        <h4>Динамический массив</h4>
+                            <ul>
+                                <li>Чтобы разность потенциалов не становилось отрицательной, к тому моменту, как придёт время для расширения массива, для этой операции должен быть накоплен достаточный потенциал</li>
+                                <li>Подберём такую функцию для динамического массива:</li>
+                                $$\Phi(D_i) = 2 \cdot num_i - size_i$$
+                            </ul>
+                    </section>
+                    <section>
+                        <h4>Корректность и стоимости операций</h4>
+                            <ul>
+                                <li>$size$ для нашего массива никогда не бывает больше $2 \cdot num$, а значит, функция подобрана корректно</li>
+                                <li>Для элементарной вставки: $size_i = size_{i - 1}$, $num_{i - 1} = num_i - 1$</li>
+                                <li>Тогда стоимость элементарной вставки: $$\hat{c}_i = c_i + \Phi_i - \Phi_{i - 1} = 1 + (2 \cdot num_i - size_i) -$$ $$- (2 \cdot num_{i - 1} - size_{i - 1}) = 3$$</li>
+                            </ul>
+                    </section>
+                    <section>
+                        <h4>Стоимость расширения</h4>
+                            <ul>
+                                <li>Для расширения: $size_i = 2 \cdot size_{i - 1}$, $size_{i - 1} = num_{i - 1} = num_i - 1$</li>
+                                <li>Тогда стоимость расширения:</li>
+                            </ul>
+                            $$\hat{c}_i = c_i + \Phi_i - \Phi_{i - 1} = num_i + (2 \cdot num_i - size_i) -$$ $$- (2 \cdot num_{i - 1} - size_{i - 1}) = 3$$
+                            <ul>
+                                <li>Таким образом, мы снова пришли к амортизированной стоимости каждой операции, равной $3$</li>
+                            </ul>
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h4>Двоичный счётчик</h4>
+                            <ul>
+                                <li>Рассмотрим ещё одну структуру данных – двоичный счётчик</li>
+                                <li>Двоичный счётчик представляет из себя массив бит некотрого двоичного числа и поддерживает единственную операцию $increment$, увеличивающую число на $1$</li>
+                            </ul>
+                    </section>
+                    <section>
+                        <h4>Двоичный счётчик</h4>
+                        <p>
+                            <img src="06/bin_counter.png">
+                        </p>
+                    </section>
+                    <section>
+                        <h4>Инкремент</h4>
+                        <pre><code data-trim class="python">
+                            def increment(A):
+                                i = 0
+                                while i < len(A) and A[i]==1:
+                                    A[i] = 0
+                                    i += 1
+                                if i < len(A):
+                                    A[i] = 1
+                        </code></pre>
+                    </section>
+                    <section>
+                        <h4>Амортизационный анализ</h4>
+                            <ul>
+                                <li>Применим метод группового анализа сложности операции $increment$</li>
+                                <li>Посмотрим, сколько раз за $n$ операций меняется каждый бит:
+                                    <ul>
+                                        <li>Бит $0$ меняется $n$ раз</li>
+                                        <li>Бит $1$ меняется $\frac{n}{2}$ раз</li>
+                                        <li>Бит $2$ меняется $\frac{n}{4}$ раз</li>
+                                        <li>Бит $L - 1$ меняется $\frac{n}{2^{L - 1}}$ раз</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                    </section>
+                    <section>
+                        <h4>Групповой анализ</h4>
+                            <ul>
+                                <li>Посчитаем количество изменений за $n$ операций:</li>
+                            </ul>
+                            $$T(n) = n + \frac{n}{2} + \frac{n}{4} + ... + \frac{n}{2^{L - 1}} &lt; n + n = O(n)$$
+                    </section>
+                    <section>
+                        <h4>Групповой анализ</h4>
+                            <ul>
+                                <li>Тогда амортизированная сложность одной операции равна:</li>
+                            </ul>
+                            $$\frac{O(n)}{n} = O(1)$$
+                    </section>
+                    <section>
+                        <h4>Метод бухгалтерского учёта</h4>
+                            <ul>
+                                <li>Установим размер начисления на каждый бит, устанавливаемый в $1$, равным $2$</li>
+                                <li>Тогда из начисленных $2$ один будет тратиться на саму установку бита, а второй на его последующий сброс</li>
+                                <li>Т.к. у нас никогда не обнуляется больше бит, чем было установлено, это корректно, а значит сложность одной операции $O(1)$</li>
+                            </ul>
+                    </section>
+                    <section>
+                        <h4>Метод потенциалов</h4>
+                            <ul>
+                                <li>Пусть $\Phi_i$ равно количеству единиц в счётчике после $i$-ой операции $increment$</li>
+                                <li>Пусть $i$-ая операция обнуляет $t_i$ бит, тогда её сложность не больше $t_i + 1$, т.к. нужно установить ещё максимум один бит</li>
+                                <li>Тогда $\Phi_i \leqslant \Phi_{i - 1} - t_i + 1$ и:</li>
+                            </ul>
+                            $$\hat{c}_i = c_i + \Phi_i - \Phi_{i - 1} \leqslant (t_i + 1) + (1 - t_i) = 2$$
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h4>Полезные источники</h4>
+                        <ol>
+                            <li>Томас Х. Кормен, Чарльз И. Лейзерсон, Рональд Л. Ривест, Клиффорд Штайн. Алгоритмы: построение и анализ, 3-е издание. Глава 17 – Основная книга нашего курса.</li>
+                            <li><a href='https://www.baeldung.com/cs/amortized-analysis'>Динамические массивы</a>: групповой анализ и метод бух учёта</li>
+                            <li><a href='https://brilliant.org/wiki/amortized-analysis/'>Все методы</a> на примере стека и двоичного счётчика</li>
+                        </ol>
+                    </section>
+                    <section>
+                        <h4>Полезные источники</h4>
+                        <ol start="4">                            
+                            <li><a href='https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2012/resources/mit6_046js12_lec11/'>Альтернативное</a> изложение материала</li>
+                            <li><a href='https://youtu.be/R2RspKAENMQ'>Альтернативное изложение</a> от лекора из МФТИ</li>
+                        </ol>
+                    </section>
+                </section>
+            </div>
+        </div>
+
+		<script src="dist/reveal.js"></script>
+		<script src="plugin/notes/notes.js"></script>
+		<script src="plugin/markdown/markdown.js"></script>
+		<script src="plugin/highlight/highlight.js"></script>
+		<script src="plugin/math/math.js"></script>
+		<script>
+			// More info about initialization & config:
+			// - https://revealjs.com/initialization/
+			// - https://revealjs.com/config/
+			Reveal.initialize({
+				hash: true,
+
+				// Learn about plugins: https://revealjs.com/plugins/
+				plugins: [ RevealMath.KaTeX, RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.MathJax2 ]
+			});
+		</script>
+	</body>
+</html>
