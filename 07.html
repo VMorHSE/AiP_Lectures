@@ -1,0 +1,731 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <meta name="mobile-web-app-capable" content="yes">
+
+		<title>Алгоритмизация и Программирование</title>
+
+		<link rel="stylesheet" href="dist/reset.css">
+		<link rel="stylesheet" href="dist/reveal.css">
+		<link rel="stylesheet" href="dist/theme/white.css">
+        <link rel="stylesheet" href="">
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="plugin/highlight/monokai.css">ъ
+        <style>
+            .reveal .slides section .fragment.step-fade-in-then-out {
+                opacity: 0;
+                display: none; }
+            .reveal .slides section .fragment.step-fade-in-then-out.current-fragment {
+                opacity: 1;
+                display: inline; }
+            .reveal .slides section .fragment.step-fade-in {
+                opacity: 0;
+                display: none; }
+            .reveal .slides section .fragment.step-fade-in.current-fragment {
+                opacity: 1;
+                display: inline; }
+            .reveal .slides section .fragment.step-fade-out {
+                opacity: 0;
+                display: none; }
+            .reveal .slides section .fragment.step-fade-out.current-fragment {
+                opacity: 1;
+                display: inline; }
+        </style>
+	</head>
+	<body>
+        <div class="reveal">
+            <div class="slides">
+                <section>
+                    <h3>Алгоритмизация и Программирование</h3>
+                    <div>&nbsp;</div>
+                    <h4>Морозов Владимир Игоревич</h4>
+                </section>
+                <section>
+                    <h4>Поиск подстроки (часть $1$)</h4>
+                </section>
+                <section>
+                    <section>
+                        <h4>Постановка проблемы</h4>
+                        <ul>
+                            <li>Большое количество обрабатываемых современными ИС данных представлено в текстовом виде</li>
+                            <li>Одной из наиболее частых задач при обработке текста является поиск вхождения подстроки в строку</li>
+                            <li>От эффективности реализации такого поиска зависит производительность многих приложений</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Формализация</h4>
+                        <ul>
+                            <li>Строкой называется последовательность из $N$ значений $t = \{t_1, t_2, ..., t_N\}$</li>
+                            <li>Подстрокой называется последовательность из $M$ значений $s = \{s_1, s_2, ..., s_M\}$</li>
+                            <li>При этом $N, M \in \N, M \leqslant N$</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Формализация</h4>
+                        <ul>
+                            <li>Тогда решением задачи поиска подстроки является такой набор индексов $p_i, 1 \leqslant i \leqslant N$, что:</li>
+                        </ul>
+                        $$\forall 0 \leqslant j &lt; M, p_i: t_{p_i + j} = s_{j + 1}$$
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h4>Наивное решение</h4>
+                        <ul>
+                            <li>Самым простым решением является последовательное сравнение искомой подстроки $s$ с каждым фрагментом строки $t$ с шагом в $1$ символ</li>
+                        </ul>
+                        <pre><code data-trim class="python">
+                            def substr(t, s):
+                                N, M, p = len(t), len(s), []
+                                for i in range(N - M + 1):
+                                    full_match = True
+                                    for j in range(M):
+                                        if t[i + j] != s[j]:
+                                            full_match = False
+                                    if full_match:
+                                        p.append(i)
+                                return p
+                        </code></pre>
+                    </section>
+                    <section>
+                        <h4>Наивное решение</h4>
+                        <p>
+                            <img src="07/simple.png" height="55%" width="55%">
+                        </p>
+                    </section>
+                    <section>
+                        <h4>Сложность наивного решения</h4>
+                        <ul>
+                            <li>В представленном решении $N - M + 1$ раз проводится $M$ сравнений символов</li>
+                            <li>Тогда сложность такого решения составит $O((N - M + 1)M)$</li>
+                            <li>Далее будут рассмотрены решения, дающие лучшую сложность</li>
+                        </ul>
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h4>Терминология</h4>
+                        <ul>
+                            <li>Пусть есть строки $x$, $y$ и $w$</li>
+                            <li>$w$ является <b>префиксом</b> для $x$, если $x = wy$, где $wy$ – конкатенация строк $w$ и $y$</li>
+                            <li>$w$ является <b>суффиксом</b> для $x$, если $x = yw$</li>
+                            <li>Если к этим выражениям добавить условие $|y| > 0$, где $|y|$ – длина строки $y$, можно говорить, что $w$ является <b>собственным</b> суффиксом или префиксом для $x$</li>
+                        </ul>
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h4>Недостаток наивного решения</h4>
+                        <ul>
+                            <li>Проблема представленного решения состоит в том, что мы всегда двигаем подстроку только на $1$ вправо и только после полного сравнения</li>
+                            <li>Есть ситуации, где этот сдвиг можно сделать длиннее и выполнить раньше</li>
+                            <li>Например, если подстрока равна $aaa$, а первый символ строки – $b$, очевидно, что после сравнения первого символа уже можно выполнить сдвиг на $1$</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Допустимые сдвиги</h4>
+                        <p align="center">
+                            На сколько можно сдвинуть подстроку $s$ влево?
+                        </p>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">$i=$</th>
+                                    <td>$1$</td> <td>$2$</td> <td>$3$</td> <td>$4$</td> <td>$5$</td> <td>$6$</td> <td>$7$</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">$t=$</th>
+                                    <td>$a$</td> <td>$b$</td> <td>$c$</td> <td>$t_4$</td> <td>$?$</td> <td>$?$</td> <td>$?$</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">$t=$</th>
+                                    <td>$a$</td> <td>$b$</td> <td>$c$</td> <td>$s_4$</td> <td>$ $</td> <td>$ $</td> <td>$ $</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+                    <section>
+                        <h4>Допустимые сдвиги</h4>
+                        <p align="center">
+                            Можно смело двигать на $3$ позиции
+                        </p>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">$i=$</th>
+                                    <td>$3$</td> <td>$2$</td> <td>$3$</td> <td>$4$</td> <td>$5$</td> <td>$6$</td> <td>$7$</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">$t=$</th>
+                                    <td>$a$</td> <td>$b$</td> <td>$c$</td> <td>$t_4$</td> <td>$?$</td> <td>$?$</td> <td>$?$</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">$t=$</th>
+                                    <td>$ $</td> <td>$ $</td> <td>$ $</td> <td>$a$</td> <td>$b$</td> <td>$c$</td> <td>$s_4$</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+                    <section>
+                        <h4>Допустимые сдвиги</h4>
+                        <p align="center">
+                            Можно ли здесь сдвинуть на $3$, если $s_4 \neq t_4$?
+                        </p>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">$i=$</th>
+                                    <td>$1$</td> <td>$2$</td> <td>$3$</td> <td>$4$</td> <td>$5$</td> <td>$6$</td> <td>$7$</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">$t=$</th>
+                                    <td>$a$</td> <td>$b$</td> <td>$a$</td> <td>$t_4$</td> <td>$?$</td> <td>$?$</td> <td>$?$</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">$s=$</th>
+                                    <td>$a$</td> <td>$b$</td> <td>$a$</td> <td>$s_4$</td> <td>$ $</td> <td>$ $</td> <td>$ $</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+                    <section>
+                        <h4>Допустимые сдвиги</h4>
+                        <p align="center">
+                            Нельзя! Пропустим совпадение, если $t_6 = s_4$
+                        </p>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">$i=$</th>
+                                    <td>$1$</td> <td>$2$</td> <td>$3$</td> <td>$4$</td> <td>$5$</td> <td>$6$</td> <td>$7$</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">$t=$</th>
+                                    <td>$a$</td> <td>$b$</td> <td>$a$</td> <td>$b$</td> <td>$a$</td> <td>$t_6$</td> <td>$?$</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">$s=$</th>
+                                    <td>$ $</td> <td>$ $</td> <td>$ $</td> <td>$a$</td> <td>$b$</td> <td>$a$</td> <td>$s_4$</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+                    <section>
+                        <h4>Правило сдвигов</h4>
+                        <ul>
+                            <li>Две рассмотренные ситуации отличаются только тем, что во второй в $s$ встретились одинаковые подстроки</li>
+                            <li>Тогда двигать можно до тех пор, пока какой-то префикс $s$ не совпадёт с суффиксом рассмотренной части строки $t$</li>
+                        </ul>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">$i=$</th>
+                                    <td>$1$</td> <td>$2$</td> <td>$3$</td> <td>$4$</td> <td>$5$</td> <td>$6$</td> <td>$7$</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">$t=$</th>
+                                    <td>$a$</td> <td>$b$</td> <td>$\hat{a}$</td> <td>$t_4$</td> <td>$?$</td> <td>$?$</td> <td>$?$</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">$s=$</th>
+                                    <td>$ $</td> <td>$ $</td> <td>$\hat{a}$</td> <td>$b$</td> <td>$a$</td> <td>$s_4$</td> <td>$ $</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+                    <section>
+                        <h4>Правило сдвигов</h4>
+                        <ul>
+                            <li>Важно также отметить, что при таком сдвиге имеет смысл продолжать сравнение с позиции после совпавших префикса и суффикса</li>
+                        </ul>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">$i=$</th>
+                                    <td>$1$</td> <td>$2$</td> <td>$3$</td> <td>$4$</td> <td>$5$</td> <td>$6$</td> <td>$7$</td> <td>$8$</td> <td>$9$</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">$t=$</th>
+                                    <td>$a$</td> <td>$a$</td> <td>$b$</td> <td>$\hat{a}$</td> <td>$\hat{a}$</td> <td>$t_6$</td> <td>$?$</td> <td>$?$</td> <td>$?$</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">$s=$</th>
+                                    <td>$ $</td> <td>$ $</td> <td>$ $</td> <td>$\hat{a}$</td> <td>$\hat{a}$</td> <td>$b$</td> <td>$a$</td> <td>$a$</td> <td>$s_6$</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">$pos$</th>
+                                    <td>$ $</td> <td>$ $</td> <td>$ $</td> <td>$ $</td> <td>$ $</td> <td>$\uparrow$</td> <td>$ $</td> <td>$ $</td> <td>$ $</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+                    <section>
+                        <h4>Правило сдвигов</h4>
+                        <ul>
+                            <li>Таким образом, мы интуитивно выработали правило, по которому следует осуществлять сдвиги в целях оптимизации</li>
+                            <li>Это правило основано на повторяющихся фрагментах подстроки $s$</li>
+                            <li>Теперь необходимо выработать подход, который позволит выразить это правило в виде алгоритма</li>
+                        </ul>                        
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h4>Префикс-функция</h4>
+                        <ul>
+                            <li>В качестве подготовительного этапа для эффективного алгоритма поиска подстроки была разработана префикс-функция</li>
+                            <li>Префикс-функция каждой строке $t = \{t_1, t_2, ..., t_N\}$ ставит в соответствие массив чисел $\pi = \{\pi_1, \pi_2, ..., \pi_N\}$</li>
+                            <li>$\pi_i$ показывает наибольшую длину собственного фуффикса подстроки $s_i = \{t_1, t_2, ..., t_i\}$, равного её собственному префиксу</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Префикс-функция</h4>
+                        <ul>
+                            <li>
+                                Таким образом, в простейшей реализации, чтобы найти $\pi_i$, нужно:
+                                <ol>
+                                    <li>Взять $i$ начальных символов строки $t$ в качестве подстроки $s$</li>
+                                    <li>Взять от $s$ суффикс длины $1$ и префикс длины $1$</li>
+                                    <li>Сравнить их; если они равны, сделать $\pi_i$ равным $1$</li>
+                                    <li>Повторять шаги $2$ и $3$ для значений от $2$ до $i$</li>
+                                </ol>
+                            </li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Графическая реализация</h4>
+                        <p>
+                            <img src="07/prefix_1.png" height="70%" width="70%">
+                        </p>
+                    </section>
+                    <section>
+                        <h4>Графическая реализация</h4>
+                        <p>
+                            <img src="07/prefix_2.png" height="70%" width="70%">
+                        </p>
+                    </section>
+                    <section>
+                        <h4>Примеры</h4>
+                        <ul>
+                            <li>Вычислим значения префикс-функции для нескольких строк</li>
+                            <li>$a$ $\rightarrow$ <span class="fragment">$0$</span></li>
+                            <li>$aaaa$ $\rightarrow$ <span class="fragment">$0, 1, 2, 3$</span></li>
+                            <li>$abcabcd$ $\rightarrow$ <span class="fragment">$0, 0, 0, 1, 2, 3, 0$</span></li>
+                        </ul>
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h4>Алгоритм KMP</h4>
+                        <ul>
+                            <li>Кнут, Моррис и Пратт разработали алгоритм, который, основываясь на значениях префикс-функции, вычисленной для подстроки, позволяет эффективно искать вхождения подстроки в строку</li>
+                            <li>Изначально подстрока $s$ начинается с той же позиции, что и строка $t$, т.е. $i = j = 0$</li>
+                            <li>Далее последовательно производится сравнение $s_j$ и $t_i$</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Алгоритм KMP</h4>
+                        <ul>
+                            <li>
+                                Сравнение может закончиться в двух случаях:
+                                <ol>
+                                    <li>Подстрока закончилась ($j = M$) – тогда мы нашли вхождение</li>
+                                    <li>Символы не совпали ($s_j \neq t_i$)</li>
+                                </ol>
+                            </li>
+                            <li>В первом случае мы фиксируем индекс вхождения подстроки как $i - M$</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Алгоритм KMP</h4>
+                        <ul>
+                            <li>При любом из исходов предыдущего условия необходимо выполнить сдвиг подстроки вправо по правилу, обозначенному ранее</li>
+                            <li>В данном алгоритме это сдвиг на $j - \pi_{j - 1} - 1$ позиций</li>
+                            <li>В индексах этот сдвиг выражается как приравнивание $j = \pi_{j - 1} + 1$</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Пример</h4>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">$i=$</th>
+                                    <td>$1$</td> <td>$2$</td> <td>$3$</td> <td>$4$</td> <td>$5$</td> <td>$6$</td> <td>$7$</td> <td>$8$</td> <td>$9$</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">$t=$</th>
+                                    <td>$a$</td> <td>$b$</td> <td>$b$</td> <td>$a$</td> <td>$a$</td> <td>$b$</td> <td>$b$</td> <td>$a$</td> <td>$b$</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">$s=$</th>
+                                    <td>$a$</td> <td>$b$</td> <td>$b$</td> <td>$a$</td> <td>$ $</td> <td>$ $</td> <td>$ $</td> <td>$ $</td> <td>$ $</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">$j=$</th>
+                                    <td>$1$</td> <td>$2$</td> <td>$3$</td> <td>$4$</td> <td>$5$</td> <td>$ $</td> <td>$ $</td> <td>$ $</td> <td>$ $</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">$\pi_j=$</th>
+                                    <td>$0$</td> <td>$0$</td> <td>$0$</td> <td>$1$</td> <td>$ $</td> <td>$ $</td> <td>$ $</td> <td>$ $</td> <td>$ $</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">$pos$</th>
+                                    <td><span class="fragment fade-out" data-fragment-index="0">$\uparrow$</span></td>
+                                    <td><span class="fragment fade-in-then-out" data-fragment-index="0">$\uparrow$</span></td>
+                                    <td><span class="fragment fade-in-then-out">$\uparrow$</span></td>
+                                    <td><span class="fragment fade-in-then-out">$\uparrow$</span></td>
+                                    <td><span class="fragment fade-in">$\uparrow$</span></td>
+                                    <td>$ $</td>
+                                    <td>$ $</td>
+                                    <td>$ $</td>
+                                    <td>$ $</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+                    <section>
+                        <h4>Пример</h4>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">$i=$</th>
+                                    <td>$1$</td> <td>$2$</td> <td>$3$</td> <td>$4$</td> <td>$5$</td> <td>$6$</td> <td>$7$</td> <td>$8$</td> <td>$9$</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">$t=$</th>
+                                    <td>$a$</td> <td>$b$</td> <td>$b$</td> <td>$a$</td> <td>$a$</td> <td>$b$</td> <td>$b$</td> <td>$a$</td> <td>$b$</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">$s=$</th>
+                                    <td>$ $</td> <td>$ $</td> <td>$ $</td> <td>$a$</td> <td>$b$</td> <td>$b$</td> <td>$a$</td> <td>$ $</td> <td>$ $</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">$j=$</th>
+                                    <td>$ $</td> <td>$ $</td> <td>$ $</td> <td>$1$</td> <td>$2$</td> <td>$3$</td> <td>$4$</td> <td>$5$</td> <td>$ $</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">$\pi_j=$</th>
+                                    <td>$ $</td> <td>$ $</td> <td>$ $</td> <td>$0$</td> <td>$0$</td> <td>$0$</td> <td>$1$</td> <td>$ $</td> <td>$ $</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">$pos$</th>
+                                    <td>$ $</td>
+                                    <td>$ $</td>
+                                    <td>$ $</td>
+                                    <td>$ $</td>
+                                    <td>$\uparrow$</td>
+                                    <td>$ $</td>
+                                    <td>$ $</td>
+                                    <td>$ $</td>
+                                    <td>$ $</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+                    <section>
+                        <h4>Пример</h4>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">$i=$</th>
+                                    <td>$1$</td> <td>$2$</td> <td>$3$</td> <td>$4$</td> <td>$5$</td> <td>$6$</td> <td>$7$</td> <td>$8$</td> <td>$9$</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">$t=$</th>
+                                    <td>$a$</td> <td>$b$</td> <td>$b$</td> <td>$a$</td> <td>$a$</td> <td>$b$</td> <td>$b$</td> <td>$a$</td> <td>$b$</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">$s=$</th>
+                                    <td>$ $</td> <td>$ $</td> <td>$ $</td> <td>$ $</td> <td>$a$</td> <td>$b$</td> <td>$b$</td> <td>$a$</td> <td>$ $</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">$j=$</th>
+                                    <td>$ $</td> <td>$ $</td> <td>$ $</td> <td>$ $</td> <td>$1$</td> <td>$2$</td> <td>$3$</td> <td>$4$</td> <td>$5$</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">$\pi_j=$</th>
+                                    <td>$ $</td> <td>$ $</td> <td>$ $</td> <td>$ $</td> <td>$0$</td> <td>$0$</td> <td>$0$</td> <td>$1$</td> <td>$ $</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">$pos$</th>
+                                    <td>$ $</td>
+                                    <td>$ $</td>
+                                    <td>$ $</td>
+                                    <td>$ $</td>
+                                    <td><span class="fragment fade-out" data-fragment-index="0">$\uparrow$</span></td>
+                                    <td><span class="fragment fade-in-then-out" data-fragment-index="0">$\uparrow$</span></td>
+                                    <td><span class="fragment fade-in-then-out">$\uparrow$</span></td>
+                                    <td><span class="fragment fade-in-then-out">$\uparrow$</span></td>
+                                    <td><span class="fragment fade-in">$\uparrow$</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+                    <section>
+                        <h4>Код</h4>
+                        <pre><code data-trim class="python">
+                            def kmp(t, s):
+                                res = []
+                                n, m = len(t), len(s)
+                                pi = prefix(s)
+                                j = 0
+                                for i in range(len(t)):
+                                    while j > 0 and s[j] != t[i]:
+                                        j = pi[j - 1]
+                                    if j == m - 1:
+                                        res.append(i - m + 1)
+                                        j = pi[j - 1]
+                                    if s[j] == t[i]:
+                                        j += 1
+                                return res
+                        </code></pre>
+                    </section>
+                    <section>
+                        <h4>Сложность</h4>
+                        <ul>
+                            <li>Сложность представленного алгоритма равна $O(N) + T_{\pi}$, где $T_{\pi}$ – сложность вычисления префикс-функции</li>
+                            <li>Как видно, эффективность поиска подстроки напрямую зависит от эффективности реализации префикс-функции</li>
+                            <li>Рассмотрим реализацию префикс-функции подробнее</li>
+                        </ul>
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h4>Простая реализация</h4>
+                        <p align="left">
+                            Исходя из определения, можно написать простейшую реализацию вычисления префикс-функции
+                        </p>
+                        <pre><code data-trim class="python">
+                            def prefix(s) -> list:
+                                pi = [0]*len(s)
+                                for i in range(1,len(s)+1):
+                                    for k in range(1, i):
+                                        print(len(s[:k]))
+                                        if s[:k] == s[i-k:i]:
+                                            pi[i-1] = k
+                                return pi
+                        </code></pre>
+                    </section>
+                    <section>
+                        <h4>Сложность простой реализации</h4>
+                        <ul>
+                            <li>Уже по наличию двух вложенных циклов можно предположить сложность $\Omega(M^2)$</li>
+                            <li>
+                                Рассмотрим количество итераций каждого цикла по отдельности:
+                                <ol>
+                                    <li>Первый цикл идёт по исходной строке и, очевидно, выполняет $O(M)$ итераций</li>
+                                    <li>Второй цикл идёт от $1$, до $i$, а $i$, в свою очередь, меняется от $1$ до $M$; количество итераций в таком цикле тоже $O(M)$</li>
+                                </ol>
+                            </li>                            
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Сложность простой реализации</h4>
+                        <ul>
+                            <li>Таким образом, внутренний цикл суммарно выполняет $O(M^2)$ итераций, однако посмотрим, что происходит на каждой из них</li>
+                            <li>На каждой итерации сравниваются строки длиной от $1$ до $M - 1$</li>
+                            <li>Т.к. сравнение строк производится посимвольно, его сложность также составляет $O(M)$</li>
+                            <li>Тогда итоговая сложность составит $O(M^3)$</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Оптимизация $1$</h4>
+                        <ul>
+                            <li>Мы сказали, что эффективность вычисления префикс-функции непосредственно влияет на фремя работы алгоритма KMP, а значит, её следует оптимизировать</li>
+                            <li>Заметим, что каждый следующий компонент $\pi_i$ может быть либо на $1$ больше, либо меньше предыдущего компонента $\pi_{i - 1}$</li>
+                            <li>Исходя из этого, можно сравнивать префиксы и суффиксы по убыванию длины, начиная от $\pi_{i - 1} + 1$</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <p>Если $s_{i+1} = s_{\pi_{i}}$,<br>то $\pi_{i+1} = \pi_{i} + 1$</p>
+                        \[
+                        \underbrace{\overbrace{s_0 \quad s_1 \quad s_2}^{\pi[i]} \quad \overbrace{\ s_3\ }^{s_3=s_{i+1}} \
+                        }_{\pi[i+1]=\pi[i]+1}
+                        \quad \cdots \quad
+                        \underbrace{\overbrace{s_{i-2} \quad s_{i-1} \quad s_i}^{\pi[i]} \quad \overbrace{\ s_{i+1}\
+                        }^{s_3=s_{i+1}} \ }_{\pi[i+1]=\pi[i]+1}
+                        \]
+                    </section>
+                    <section>
+                        <h4>Код оптимизации $1$</h4>
+                        <pre><code data-trim class="python">
+                            def prefix_opt1(s) -> list:
+                                pi = [0]*len(s)
+                                for i in range(2, len(s)+1):
+                                    prev = pi[i-2]
+                                    for k in range(prev+1, 0, -1):
+                                        print(len(s[:k]))
+                                        if s[:k] == s[i-k:i]:
+                                            pi[i-1] = k
+                                            break
+                                return pi
+                        </code></pre>
+                    </section>
+                    <section>
+                        <h4>Сложность оптимизированного алгоритма</h4>
+                        <ul>
+                            <li>Средствами амортизационного анализа можно показать, что амортизированная сложность одной итерации внутреннего цикла составляет $O(M)$</li>
+                            <li>Это даёт общую сложность алгоритма $O(M^2)$</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Оптимизация $2$</h4>
+                        <ul>
+                            <li>Теперь попробуем вообще избавиться от непосредственных сравнений строк</li>
+                            <li>Для этого сначала заполним таблицу так, чтобы $\pi_i$ увеличивался</li>
+                        </ul>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">$i$</th>
+                                    <td>$1$</td> <td>$2$</td> <td>$3$</td> <td>$4$</td> <td>$5$</td> <td>$6$</td> <td>$7$</td>
+                                </tr>
+                                    <th scope="row">$s_i$</th>
+                                    <td>$a$</td> <td>$b$</td> <td>$c$</td>
+                                    <td class="fragment" data-fragment-index="0">$a$</td>
+                                    <td class="fragment" data-fragment-index="2">$b$</td>
+                                    <td class="fragment" data-fragment-index="4">$c$</td>
+                                    <td class="fragment" data-fragment-index="6">$a$</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">$\pi_i$</th>
+                                    <td>$0$</td> <td>$0$</td> <td>$0$</td>
+                                    <td class="fragment" data-fragment-index="1">$1$</td>
+                                    <td class="fragment" data-fragment-index="3">$2$</td>
+                                    <td class="fragment" data-fragment-index="5">$3$</td>
+                                    <td class="fragment" data-fragment-index="7">$4$</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+                    <section>
+                        <h4>Оптимизация $2$</h4>
+                        <ul>
+                            <li>Из таблицы можно увидеть, что, чтобы значение $\pi_i$ увеличилось, нужно, чтобы $i$-ый символ был продолжением суффикса $s[1..i]$ длины $\pi_{i - 1}$, равного префиксу $s$ такой же длины</li>
+                            <li>Другими словами, чтобы значение $\pi_i$ увеличилось, нужно, чтобы $i$-ый символ совпал с $s_{\pi_{i - 1} + 1}$</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Оптимизация $2$</h4>
+                        <ul>
+                            <li>Если же $s_i$ не является продолжением суффикса длины $\pi_{i - 1}$, нужно проверить, не является ли он продолжением суффикса меньшей длины, для которого выполняется префиксное свойство</li>
+                            <li>Длины таких суффиксов расположены в массиве $\pi$ на позициях $j - 1$, если $j$ – конец текущего префикса</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <p>Если $s_{i+1} \neq s_{\pi_i}$, то</p>
+                        \[
+                        \overbrace{\underbrace{s_0 \quad s_1}_{j} \quad s_2 \quad s_3}^{\pi[i]}
+                        \quad \cdots \quad
+                        \overbrace{s_{i-3} \quad s_{i-2} \quad \underbrace{s_{i-1} \quad s_i}_{j}}^{\pi[i]}
+                        \quad s_{i+1}
+                        \]
+                    </section>
+                    <section>
+                        <h4>Оптимизированный алгоритм</h4>
+                        <ol>
+                            <li>Примем $\pi_1 = 0$ и будем итерироваться в цикле по $i = \overline{2,n}$</li>
+                            <li>Пусть $j$ – длина текущего суффикса – изначально равна $\pi_{i - 1}$</li>
+                            <li>Рассматриваем суффикс длины $j$, проверяя равенство $s_i$ и $s_{j + 1}$:
+                                <ol>
+                                    <li>Если они совпали, полагаем $\pi_i = j + 1$ и переходим к следующей итерации</li>
+                                    <li>Иначе полагаем $j = \pi_{j}$ и повторяем шаг $3$</li>
+                                </ol>
+                            </li>
+                        </ol>
+                    </section>
+                    <section>
+                        <h4>Оптимизированный алгоритм</h4>
+                        <ol start="4">
+                            <li>Если дошли до $j = 0$ и проверка из шага $3$ ни разу не прошла, устанавливаем $\pi_i = 0$ и переходим к следующей итерации</li>
+                        </ol>
+                    </section>
+                    <section>
+                        <h4>Код оптимизации $2$</h4>
+                        <pre><code data-trim class="python">
+                            def prefix_opt2(s) -> list:
+                                pi = [0]*len(s)
+                                j = 0
+                                for i in range(1, len(s)):
+                                    while j > 0 and s[i] != s[j]:
+                                        j = pi[j-1]
+                                    if s[i] == s[j]:
+                                        j = j + 1
+                                    pi[i] = j
+                                return pi
+                        </code></pre>
+                    </section>
+                    <section>
+                        <h4>Графическое представление</h4>
+                        <p>
+                            <img src="07/prefix_opt_2.png" height="100%" width="100%">
+                        </p>
+                    </section>
+                    <section>
+                        <h4>Анализ сложности</h4>
+                        <ul>
+                            <li>При помощи амортизационного анализа можно показать, что алгоритм имеет сложность $O(M)$</li>
+                            <li>Для этого достаточно показать, что цикл <code data-trim class="python">while</code> за всё время работы функции выполняет не более $M$ итераций</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Анализ сложности</h4>
+                        <ul>
+                            <li>Для начала увидим, что $j$ увеличивается только один раз за итерацию цикла <code data-trim class="python">for</code></li>
+                            <li>Далее увидим, что в цикле <code data-trim class="python">while</code> происходит только уменьшение $j$, т.к. изначально и всегда $j &lt; i$, а $\pi_i$ присваивается $j$, а значит $\pi_j$ всегда меньше $j$</li>
+                            <li>Т.к. по условию цикла <code data-trim class="python">while</code> всегда $j &gt; 0$, цикл <code data-trim class="python">while</code> выполняет не больше итераций, чем цикл <code data-trim class="python">for</code></li>
+                            <li>Тогда искомая сложность – $O(M)$</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Итоговая сложность алгоритма</h4>
+                        <ul>
+                            <li>Мы уже показали, что сложность алгоритма Кнута-Морриса-Пратта равна $O(N) + T_{\pi}$, где $T_{\pi}$ – сложность вычисления префикс-функции</li>
+                            <li>Теперь мы показали, что префикс-функцию можно вычислить за $O(M)$</li>
+                            <li>Тогда итоговая сложность алгоритма:</li>
+                        </ul>
+                        $$O(N + M)$$
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h4>Полезные источники</h4>
+                        <ol>
+                            <li>Томас Х. Кормен, Чарльз И. Лейзерсон, Рональд Л. Ривест, Клиффорд Штайн. Алгоритмы: построение и анализ, 3-е издание. Глава 32, введение и разделы 32.1, 32.4 – Основная книга нашего курса.</li>
+                            <li><a href='https://e-maxx.ru/algo/prefix_function'>Ещё одно описание</a>: префикс-функции и KMP на русском</li>
+                            <li><a href='https://binary-baba.medium.com/string-matching-kmp-algorithm-27c182efa387'>Хорошее описание</a> на английском (может не работать без VPN)</li>
+                        </ol>
+                    </section>
+                    <section>
+                        <h4>Полезные источники</h4>
+                        <ol start="4">
+                            <li><a href='https://towardsdatascience.com/pattern-search-with-the-knuth-morris-pratt-kmp-algorithm-8562407dba5b'>Разбор</a> предыдущего описания на английском</li>
+                            <li><a href='https://youtu.be/7g-WEBj3igk'>Мини-лекция</a> про KMP</li>
+                            <li><a href='http://whocouldthat.be/visualizing-string-matching/'>Визуализация</a> KMP</li>
+                            <li><a href='./07/prefix-function-visualiser-master/prefix-function-visualiser-master/index.html'>Визуализация</a> префикс-функции</li>
+                        </ol>
+                    </section>
+                </section>
+            </div>
+        </div>
+
+		<script src="dist/reveal.js"></script>
+		<script src="plugin/notes/notes.js"></script>
+		<script src="plugin/markdown/markdown.js"></script>
+		<script src="plugin/highlight/highlight.js"></script>
+		<script src="plugin/math/math.js"></script>
+		<script>
+			// More info about initialization & config:
+			// - https://revealjs.com/initialization/
+			// - https://revealjs.com/config/
+			Reveal.initialize({
+				hash: true,
+
+				// Learn about plugins: https://revealjs.com/plugins/
+				plugins: [ RevealMath.KaTeX, RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.MathJax2 ]
+			});
+		</script>
+	</body>
+</html>

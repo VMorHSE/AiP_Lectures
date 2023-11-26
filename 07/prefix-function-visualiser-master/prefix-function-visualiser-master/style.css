@@ -1,0 +1,209 @@
+#code-section {
+  position: relative;
+  width: 30%;
+  float: right;
+  height: 80%;
+  background: none;
+}
+
+#input-section {
+  position: relative;
+  width: 70%;
+  float: left;
+  height: 20%;
+  background: none;
+}
+
+#data-section {
+  position: relative;
+  width: 70%;
+  float: left;
+  height: 100%;
+  background: none;
+}
+
+#visual-section {
+  position: relative;
+  width: 70%;
+  float: left;
+  height: 100%;
+  background: none;
+  text-align: center;
+  margin-top: 100px;
+}
+
+#explain-section {
+  position: relative;
+  width: 30%;
+  float: right;
+  height: 100%;
+  background: none;
+}
+
+td.table-char {
+  font-family: monospace;
+  color: grey;
+  font-size: 24px;
+  width: 40px;
+  text-align: center;
+}
+
+td.match {
+  background-color: lightgreen;
+}
+
+td.hide_char {
+  visibility: hidden;
+}
+tr.hide_all > td, td.hide_all{
+  border-left:hidden;
+  border-top:hidden;
+  border-bottom:hidden;
+}
+
+li.L0, li.L1, li.L2, li.L3,
+li.L5, li.L6, li.L7, li.L8 {
+  list-style-type: decimal !important;
+}
+
+@keyframes disappear-anim {
+  0% {
+    -webkit-filter: blur(0.01);
+    filter: blur(0.01);
+  }
+  100% {
+    letter-spacing: -0.5em;
+    -webkit-filter: blur(12px) opacity(0%);
+    filter: blur(12px) opacity(0%);
+  }
+}
+
+td.disappear {
+  animation-name: disappear-anim;
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+}
+
+td.disappear-late {
+  animation-name: disappear-anim;
+  animation-duration: 1s;
+  /*animation-delay: 0.7s;*/
+  animation-fill-mode: forwards;
+}
+
+@keyframes appear-anim {
+  0% {
+  letter-spacing: -0.5em;
+  -webkit-transform: translateZ(-800px);
+          transform: translateZ(-800px);
+  -webkit-filter: blur(12px);
+          filter: blur(12px);
+  opacity: 0;
+  }
+  100% {
+    -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+    -webkit-filter: blur(0);
+            filter: blur(0);
+    opacity: 1;
+  }
+}
+
+td.appear {
+  animation-name: appear-anim;
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+}
+
+td.visual  {
+  font-family: monospace;
+  color: grey;
+  font-size: 70px;
+}
+
+td.equal-prefix-underline {
+  text-decoration: underline;
+  text-decoration-color: lightgreen;
+  text-decoration-width: 20px;
+}
+
+td.equal-prefix-overline {
+  text-decoration: overline;
+  text-decoration-color: lightgreen;
+  text-decoration-width: 20px;
+}
+
+td.equal-prefix-combine {
+  text-decoration: overline underline;
+  text-decoration-color: lightgreen;
+  text-decoration-width: 20px;
+}
+
+td.match {
+  background-color: lightgreen;
+  color: black;
+}
+
+td.mismatch {
+  background-color: lightcoral;
+  color: black;
+}
+
+@keyframes moveee {
+  100% {
+    left: 100px;
+    top: 100px;
+  }
+}
+
+td.moveee {
+  position: relative;
+  animation-name: moveee;
+  animation-duration: 2s;
+  animation-fill-mode: forwards;
+}
+
+#plotArea {
+  margin-top: 100px;
+}
+
+.collapsible {
+  background-color: #f1f1f1;
+  /*color: white;*/
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 20px;
+}
+
+.active, .collapsible:hover {
+  background-color: #f1f1f1;
+}
+
+.collapsible:after {
+  content: '\002B';
+  /*color: white;*/
+  font-weight: bold;
+  float: right;
+  margin-left: 5px;
+}
+
+.active:after {
+  content: "\2212";
+}
+
+.content {
+  font-size: 18px;
+  padding: 0 18px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+  background-color: #f1f1f1;
+}
+
+.code-font {
+  font-size: 20px;
+}

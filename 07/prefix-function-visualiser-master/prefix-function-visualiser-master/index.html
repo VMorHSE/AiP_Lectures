@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=default&amp;lang=py" defer=""></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML'></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <title>prefix-function-visualiser</title>
+  </head>
+  <body>
+    <div id="app">
+
+      <header>
+          <h1>Алгоритм поиска префикс функции строки</h1>
+        </header>
+        
+        <div id="input-section">
+          <button class="collapsible">Что такое префикс функция?</button>
+        <div class="content">
+        <p>
+          Дана строка \(s[0 \cdots n-1]\). Требуется вычислить для неё префикс-функцию, т.е. массив чисел \(p[0 \cdots n-1]\), где \(p[i]\) определяется следующим образом: это такая наибольшая длина наибольшего собственного суффикса подстроки \(s[0 \cdots i]\), совпадающего с её префиксом (собственный суффикс — значит не совпадающий со всей строкой). В частности, значение \(p[0]\) полагается равным нулю. Понятно, что мы могли бы явно для каждого префикса перебирать значение и получить префикс функции, но такой подход крайне неэффективен, мы получаем алгоритм кубической сложности. Опишем работу линейного алгоритма. Заметим, что \(p[i + 1] \leq p[i] + 1\). То есть при переходе на следующую позицию префикс либо не изменяется, либо увеличивается на единицу, либо уменьшается на произвольную величину. То есть всего случится не более \(n\) увеличений и уменьшений. Мы уже получаем алгоритм квадратичной сложности. Теперь постараемся больше использовать информацию с предыдущих шагов. Попытаемся продолжить префикс с предыдущего шага. Заметим, что, если \(s[i + 1] = s[p[i]]\), то \(p[i + 1] = p[i] + 1\). Если же элементы не равны, то заметим, что мы можем сразу перейти к продолжению префикса \(p[i - 1]\), как максимально возможному префиксу, который меньше префикса p[i]. Таким образом, мы избавились от явного сравнения строк и получили линейный алгоритм поиска префикс-функции. 
+
+      </p>
+      </div>
+      <button class="collapsible">Почему она работает за \( O(n) \)?</button>
+        <div class="content">
+        <p>Если предыдущее объяснение не прояснило вопрос о линейности алгоритма, рассмотрим его подробнее. Понятно, что если мы покажем, что while на 4 строчке суммарно работает за \(O(n)\), то все будет ясно. Каждый шаг значение префикс-функции может увеличиться максимум на 1. В while-е каждый шаг потенциальное значение префикс-функции уменьшается на 1. То есть суммарно while никак не может выполниться больше \(O(n)\) раз. Для большей наглядности ниже будет представлена траектория сравнения.</p>
+      </div>
+          <input id="searchtext" class="form-control" v-model="textInput" type="text" placeholder="Введите строчку" maxlength="24" list="suggestions"/>
+          <datalist id="suggestions">
+            <option value="aaaaaaaaaaaa">
+            <option value="abacabadabacaba">
+            <option value="abcdadcabcdabcdab">
+            <option value="abababababb">
+            <option value="atcacatcatca">
+            <option value="ababacabacbabababacaab">
+          </datalist>
+<!--        </div>-->
+
+<!--          <span id="searchtext_sizecontroller" style="color:#800;">{{ checkSearchTextSize() }}</span>-->
+          <div class="data-section">
+            <table border="1">
+              <tr>
+                <td class="table-char hide_all">i:</td>
+                <td v-for="i in string.length" v-bind:class=dataSectionChar(i)>{{ i - 1 }}</td>
+              </tr>
+              <tr>
+                <td class="table-char hide_all">s[]:</td>
+                <td v-for="i in string.length" v-bind:class=dataSectionChar(i)>{{ string[i - 1] }}</td>
+              </tr>
+              <tr>
+                <td class="table-char hide_all">p[]:</td>
+                <td v-for="i in string.length" v-bind:class=dataSectionChar(i)>{{ prefixValsChar(i - 1) }}</td>
+              </tr>
+            </table>
+
+          </div>
+        </div>
+        <div id="code-section">
+          <pre class="prettyprint linenums" id="code-output"><span class="code-font" v-for="i in codeLines.length">{{codeLines[i - 1] + ((i === codeLines.length) ? '' : '\n')}}</span></pre>
+          <button type="button" class="btn btn-primary" v-on:click="previousStep()">Назад</button>
+          <button type="button" class="btn btn-primary" v-on:click="nextStep()" >Вперед</button>
+          <button type="button" class="btn btn-primary" v-on:click="stopStartAlgorithm()">{{ isStopped ? 'Play' : 'Pause' }}</button> 
+          <input type="range" id='range-slider' name="compslider" min="0" v-bind:max="dataHighlights.length - 1" v-model="slideAlgorithmStep" v-on:click="slideAlgorithm()" />
+          <p v-html="commentariesText"></p>
+        </div>
+      <div id="visual-section">
+        <table align="center">
+          <tr>
+            <td class="table-char visual hide_char">a</td>
+            <td v-for="i in string.length" v-bind:class=realVisualSectionChar(i) v-bind:id=visualSectionCharId(i)>{{ visualSectionCharVal(i - 1) }}</td>
+          </tr>
+          <tr>
+            <td class="table-char visual hide_char">b</td>
+            <td v-for="i in string.length" v-bind:class=visualSectionChar1(i) v-bind:id=visualSectionChar1Id(i)>{{ visualSectionChar2Val(i - 1) }}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div style="clear:both;"></div>
+    <div id="plotArea">
+        <button class="collapsible">Траектория сравнения</button>
+        <div class="content">
+        <p>Приведенный ниже график показывает, как меняется рассматриваемый образец в процессе построения префикс функции. По оси Х расположены индекс, по оси Y \(-\) длина рассматриваемого образца.</p>
+      </div>
+        <div id="comparisonsplot"></div>
+    </div>
+    <script src="./src/main.js"></script>
+    <script src="./src/algorithm.js"></script>
+    <script>
+    var coll = document.getElementsByClassName("collapsible");
+    var i;
+
+    for (i = 0; i < coll.length; i++) {
+      coll[i].addEventListener("click", function() {
+        this.classList.toggle("active");
+        var content = this.nextElementSibling;
+        if (content.style.maxHeight){
+          content.style.maxHeight = null;
+        } else {
+          content.style.maxHeight = content.scrollHeight + "px";
+        } 
+      });
+    }
+    </script>
+
+  </body>
+</html>
