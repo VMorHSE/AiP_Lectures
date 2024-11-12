@@ -54,7 +54,7 @@
                             <li>Общее время работы алгоритма в таком случае равно:</li>
                             <p align="center">$t_1 + N * t_2 + (N - 1) * t_3 + t_4$</p>                                            
                             <li>После преобразований получим:</li>
-                            <p align="center">$(t_2 + t_3) * N + (t_1 + t_2 - t_3)$</p>
+                            <p align="center">$(t_2 + t_3) * N + (t_1 + t_2 - t_3 + t_4)$</p>
                             <li>Заменив множитель перед $N$ на $a_{lin}$, а оставшиеся слагаемые на $b_{lin}$, получим обычную линейную функцию от $N$:</li>
                             <p align="center">$a_{lin} N + b_{lin}$</p>
                         </ul>
@@ -248,7 +248,7 @@
                             <li>$\Theta(g(N))$ означает множество функций таких, что:</li>
                         </ul>
                         <p>
-                            $\Theta(g(N)) = \{f(N): \exists c_1, c_2 \in {\R}_+, N_0 \in \N \ | \ \forall N \geqslant N_0: 0 \geqslant c_1g(N) \geqslant f(N) \geqslant c_2g(N)\}$
+                            $\Theta(g(N)) = \{f(N): \exists c_1, c_2 \in {\R}_+, N_0 \in \N \ | \ \forall N \geqslant N_0: 0 \leqslant c_1g(N) \leqslant f(N) \leqslant c_2g(N)\}$
                         </p>
                     </section>
                     <section>
