@@ -363,13 +363,28 @@
                                     <table>
                                         <tr>
                                             <td class="greenCell">6</td>
-                                            <td class="lightGreenCell"></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td>1</td>
+                                <td>1</td>
+                                <td>0</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>append(2)</td>
+                                <td class="to_left">
+                                    <table>
+                                        <tr>
+                                            <td class="greenCell">6</td>
+                                            <td class="greenCell">2</td>
                                         </tr>
                                     </table>
                                 </td>
                                 <td>1</td>
                                 <td>2</td>
-                                <td class="red">-1</td>
+                                <td>-1</td>
                                 <td class="red">-1</td>
                             </tr>
                             </tbody>
@@ -378,13 +393,13 @@
                     <section>
                         <h4>Подбор размера начислений</h4>
                             <ul>
-                                <li>Как видно, мы "обанкротились" после первой же операции вставки</li>                     
+                                <li>Как видно, мы "обанкротились" после второй операции вставки</li>                     
                                 <li>Возьмём размер начислений равным $2$</li>
                             </ul>
                     </section>
                     <section>
                         <h4>Проверка с $2$</h4>
-                        <table class="accountTable">
+                        <table class="accountTable" style="font-size: 32px">
                             <thead>
                             <tr>
                                 <td>i</td>
@@ -404,14 +419,13 @@
                                     <table>
                                         <tr>
                                             <td class="greenCell">6</td>
-                                            <td class="lightGreenCell"></td>
                                         </tr>
                                     </table>
                                 </td>
                                 <td>2</td>
-                                <td>2</td>
-                                <td class="red">-</td>
-                                <td class="red">0</td>
+                                <td>1</td>
+                                <td>+1</td>
+                                <td>1</td>
                             </tr>
                             <tr>
                                 <td>1</td>
@@ -421,15 +435,71 @@
                                         <tr>
                                             <td class="greenCell">6</td>
                                             <td class="greenCell">2</td>
-                                            <td class="lightGreenCell"></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td>2</td>
+                                <td>2</td>
+                                <td>0</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>append(8)</td>
+                                <td class="to_left">
+                                    <table>
+                                        <tr>
+                                            <td class="greenCell">6</td>
+                                            <td class="greenCell">2</td>
+                                            <td class="greenCell">8</td>
                                             <td class="lightGreenCell"></td>
                                         </tr>
                                     </table>
                                 </td>
                                 <td>2</td>
                                 <td>3</td>
-                                <td class="red">-1</td>
-                                <td class="red">-1</td>
+                                <td>-1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>append(1)</td>
+                                <td class="to_left">
+                                    <table>
+                                        <tr>
+                                            <td class="greenCell">6</td>
+                                            <td class="greenCell">2</td>
+                                            <td class="greenCell">8</td>
+                                            <td class="greenCell">1</td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td>2</td>
+                                <td>1</td>
+                                <td>+1</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>append(3)</td>
+                                <td class="to_left">
+                                    <table>
+                                        <tr>
+                                            <td class="greenCell">6</td>
+                                            <td class="greenCell">2</td>
+                                            <td class="greenCell">8</td>
+                                            <td class="greenCell">1</td>
+                                            <td class="greenCell">3</td>
+                                            <td class="lightGreenCell"></td>
+                                            <td class="lightGreenCell"></td>
+                                            <td class="lightGreenCell"></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td>2</td>
+                                <td>5</td>
+                                <td>-3</td>
+                                <td class="red">-2</td>
                             </tr>
                             </tbody>
                         </table>
@@ -437,7 +507,7 @@
                     <section>
                         <h4>Подбор размера начислений</h4>
                             <ul>
-                                <li>Теперь "банкротство" настигло нас после второй операции вставки</li>                     
+                                <li>Теперь "банкротство" настигло нас после пятой операции вставки</li>                     
                                 <li>Возьмём размер начислений равным $3$</li>
                             </ul>
                     </section>
@@ -463,14 +533,13 @@
                                     <table>
                                         <tr>
                                             <td class="greenCell">6</td>
-                                            <td class="lightGreenCell"></td>
                                         </tr>
                                     </table>
                                 </td>
                                 <td>3</td>
-                                <td>2</td>
-                                <td class="green">+1</td>
                                 <td>1</td>
+                                <td>+2</td>
+                                <td>2</td>
                             </tr>
                             <tr>
                                 <td>1</td>
@@ -480,15 +549,13 @@
                                         <tr>
                                             <td class="greenCell">6</td>
                                             <td class="greenCell">2</td>
-                                            <td class="lightGreenCell"></td>
-                                            <td class="lightGreenCell"></td>
                                         </tr>
                                     </table>
                                 </td>
                                 <td>3</td>
                                 <td>2</td>
-                                <td class="">-</td>
-                                <td>1</td>
+                                <td>+1</td>
+                                <td>3</td>
                             </tr>
                             <tr>
                                 <td>2</td>
@@ -504,8 +571,8 @@
                                     </table>
                                 </td>
                                 <td>3</td>
-                                <td>1</td>
-                                <td class="green">+2</td>
+                                <td>3</td>
+                                <td>0</td>
                                 <td>3</td>
                             </tr>
                             <tr>
@@ -518,17 +585,13 @@
                                             <td class="greenCell">2</td>
                                             <td class="greenCell">8</td>
                                             <td class="greenCell">1</td>
-                                            <td class="lightGreenCell"></td>
-                                            <td class="lightGreenCell"></td>
-                                            <td class="lightGreenCell"></td>
-                                            <td class="lightGreenCell"></td>
                                         </tr>
                                     </table>
                                 </td>
                                 <td>3</td>
-                                <td>5</td>
-                                <td class="red">-2</td>
                                 <td>1</td>
+                                <td>+2</td>
+                                <td>5</td>
                             </tr>
                             <tr>
                                 <td>4</td>
@@ -548,8 +611,8 @@
                                     </table>
                                 </td>
                                 <td>3</td>
-                                <td>1</td>
-                                <td class="green">+2</td>
+                                <td>5</td>
+                                <td>-2</td>
                                 <td>3</td>
                             </tr>
                             <tr>
@@ -571,33 +634,11 @@
                                 </td>
                                 <td>3</td>
                                 <td>1</td>
-                                <td class="green">+2</td>
+                                <td>+2</td>
                                 <td>5</td>
                             </tr>
                             <tr>
                                 <td>6</td>
-                                <td>append(7)</td>
-                                <td class="to_left">
-                                    <table>
-                                        <tr>
-                                            <td class="greenCell">6</td>
-                                            <td class="greenCell">2</td>
-                                            <td class="greenCell">8</td>
-                                            <td class="greenCell">1</td>
-                                            <td class="greenCell">3</td>
-                                            <td class="greenCell">4</td>
-                                            <td class="greenCell">7</td>
-                                            <td class="lightGreenCell"></td>
-                                        </tr>
-                                    </table>
-                                </td>
-                                <td>3</td>
-                                <td>1</td>
-                                <td class="green">+2</td>
-                                <td>7</td>
-                            </tr>
-                            <tr>
-                                <td>7</td>
                                 <td>append(2)</td>
                                 <td class="to_left">
                                     <table>
@@ -608,9 +649,53 @@
                                             <td class="greenCell">1</td>
                                             <td class="greenCell">3</td>
                                             <td class="greenCell">4</td>
-                                            <td class="greenCell">7</td>
                                             <td class="greenCell">2</td>
                                             <td class="lightGreenCell"></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td>3</td>
+                                <td>1</td>
+                                <td>+2</td>
+                                <td>7</td>
+                            </tr>
+                            <tr>
+                                <td>7</td>
+                                <td>append(5)</td>
+                                <td class="to_left">
+                                    <table>
+                                        <tr>
+                                            <td class="greenCell">6</td>
+                                            <td class="greenCell">2</td>
+                                            <td class="greenCell">8</td>
+                                            <td class="greenCell">1</td>
+                                            <td class="greenCell">3</td>
+                                            <td class="greenCell">4</td>
+                                            <td class="greenCell">2</td>
+                                            <td class="greenCell">5</td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td>3</td>
+                                <td>1</td>
+                                <td>+2</td>
+                                <td>9</td>
+                            </tr>
+                            <tr>
+                                <td>8</td>
+                                <td>append(9)</td>
+                                <td class="to_left">
+                                    <table>
+                                        <tr>
+                                            <td class="greenCell">6</td>
+                                            <td class="greenCell">2</td>
+                                            <td class="greenCell">8</td>
+                                            <td class="greenCell">1</td>
+                                            <td class="greenCell">3</td>
+                                            <td class="greenCell">4</td>
+                                            <td class="greenCell">2</td>
+                                            <td class="greenCell">5</td>
+                                            <td class="greenCell">9</td>
                                             <td class="lightGreenCell"></td>
                                             <td class="lightGreenCell"></td>
                                             <td class="lightGreenCell"></td>
@@ -623,17 +708,8 @@
                                 </td>
                                 <td>3</td>
                                 <td>9</td>
-                                <td class="red">-6</td>
-                                <td>1</td>
-                            </tr>
-                            <tr>
-                                <td>...</td>
-                                <td>...</td>
-                                <td>...</td>
-                                <td>...</td>
-                                <td>...</td>
-                                <td>...</td>
-                                <td>...</td>
+                                <td>-6</td>
+                                <td>3</td>
                             </tr>
                             <tr>
                                 <td>...</td>
@@ -659,7 +735,7 @@
                     <section>
                         <h4>Подбор размера начислений</h4>
                             <ul>
-                                <li>Видим, что даже для $8$ операций вставки баланс остался положительным</li>                     
+                                <li>Видим, что даже для $9$ операций вставки баланс остался положительным</li>                     
                                 <li>Следовательно, $3$ – размер начислений, который нам нужен</li>
                                 <li>К такому размеру можно прийти путём логических рассуждений: на каждый вставленный элемент нам нужен запас:
                                     <ul>
