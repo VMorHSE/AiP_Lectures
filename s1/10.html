@@ -1,0 +1,432 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <meta name="mobile-web-app-capable" content="yes">
+
+		<title>Алгоритмизация и Программирование</title>
+
+		<link rel="stylesheet" href="../dist/reset.css">
+		<link rel="stylesheet" href="../dist/reveal.css">
+		<link rel="stylesheet" href="../dist/theme/white.css">
+        <link rel="stylesheet" href="">
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="../plugin/highlight/monokai.css">
+        <style>
+            .reveal .slides section .fragment.step-fade-in-then-out {
+                opacity: 0;
+                display: none; }
+            .reveal .slides section .fragment.step-fade-in-then-out.current-fragment {
+                opacity: 1;
+                display: inline; }
+            .reveal .slides section .fragment.step-fade-in {
+                opacity: 0;
+                display: none; }
+            .reveal .slides section .fragment.step-fade-in.current-fragment {
+                opacity: 1;
+                display: inline; }
+            .reveal .slides section .fragment.step-fade-out {
+                opacity: 0;
+                display: none; }
+            .reveal .slides section .fragment.step-fade-out.current-fragment {
+                opacity: 1;
+                display: inline; }
+            .container{
+                display: flex;
+            }
+            .col{
+                flex: 1;
+            }
+    </style>
+	</head>
+	<body>
+        <div class="reveal">
+            <div class="slides">
+                <section>
+                    <h3>Алгоритмизация и Программирование</h3>
+                    <div>&nbsp;</div>
+                    <h4>Морозов Владимир Игоревич</h4>
+                </section>
+                <section>
+                    <h4>Формализация понятия &laquo;алгоритм&raquo;</h4>
+                </section>
+                <section>
+                    <h4>Постановка проблемы</h4>
+                    <ul>
+                        <li>На определённом этапе своего развития наука столкнулась с тем, что для решения некоторых задач алгоритмов не существует</li>
+                        <li>Чтобы доказать такое утверждение для какой-либо задачи, возникла необходимость уточнить само понятие &laquo;алгоритм&raquo;</li>
+                        <li>В рамках данной лекции будет рассмотрено несколько способов такого уточнения</li>
+                    </ul>
+                </section>
+                <section>
+                    <section>
+                        <h4>Машина Тьюринга</h4>
+                        <ul>
+                            <li>В 1936 году Алан Тьюринг ввёл понятие <b>машины Тьюринга</b> для формализации понятия алгоритма</li>
+                            <li>Она представляет собой простейшую вычислительную машину с линейной памятью</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Машина Тьюринга</h4>
+                        <p align="left">Машина состоит из:</p>
+                        <ol>
+                            <li>Бесконечной в обе стороны <b>ленты</b>, разделённой на ячейки, в каждой из которых может быть записан один символ некотрого <b>алфавита</b></li>
+                            <li><b>Головки</b>, которая может последовательно передвигаться по ячейкам ленты, читая и записывая символы</li>
+                            <li>Набора <b>правил перехода</b>, согласно которым действует головка</li>
+                        </ol>
+                    </section>
+                    <section>
+                        <h4>Графическое представление</h4>
+                        <p>
+                            <img src="10/Turing_machine.png">
+                        </p>
+                    </section>
+                    <section>
+                        <h4>Принцип работы</h4>
+                        <ul>
+                            <li>Изначально на ленту помещены символы, представляющие входные данные</li>
+                            <li>Остальные ячейки при этом заполнены пустыми символами $\#$</li>
+                            <li>Головка располагается в ячейке, предшествующей первому символу входных данных</li>
+                            <li>По окончании работы на ленте остаются выходные данные и головка так же располагается перед ними</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Принцип работы</h4>
+                        <ul>
+                            <li>Преобразование входных данных в выходные происходит по правилам перехода, которые, по сути, представляют программу для Машины</li>
+                            <li>Правила организуются следующим образом</li>
+                            $$q_ia_j \rightarrow q_{i'}a_{j'}d_k,$$
+                            <li>
+                                где:
+                                <ul>
+                                    <li>$q_i$ – текщуее состояние машины</li>
+                                    <li>$a_j$ – символ, на котором стоит головка</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Принцип работы</h4>
+                        <ul>
+                            <li>продолжение:
+                                <ul>
+                                    <li>$q_{i'}$ – новое состояние машины</li>
+                                    <li>$a_{j'}$ – символ, на который заменяется текущий</li>
+                                    <li>
+                                        $d_k$ – направление перемещения головки:
+                                        <ol>
+                                            <li>$L$ – шаг влево</li>
+                                            <li>$R$ – шаг вправо</li>
+                                            <li>$N$ – остаться на месте</li>
+                                        </ol>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Принцип работы</h4>
+                        <p align="left">Таким образом, правило $q_ia_j \rightarrow q_{i'}a_{j'}d_k$ можно интерпретировать, как:<br>&laquo;Если машина находится в состоянии $q_i$ и головка в данный момент установлена на ячейке, содержащей символ $a_j$, нужно перейти в состояние $q_{i'}$, записать в текущую ячейку символ $a_{j'}$ и переместиться в направлении $d_k$&raquo;</p>
+                    </section>
+                    <section>
+                        <h4>Принцип работы</h4>
+                        <ul>
+                            <li>Машина может иметь любое конечное число состояний</li>
+                            <li>При этом выделяются, как минимум, два состояния, которые должны быть у каждой машины: $q_0$ и $q_Z$</li>
+                            <li>$q_0$ – начальное состояние машины, в котором она находится при запуске</li>
+                            <li>$q_Z$ – конечное состояние машины, при переходе в которое её работа прекращается</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Пример $1$</h4>
+                        <ul>
+                            <li>Пусть есть задача: дано число в унарной системе счисления, необходимо увеличить значение этого числа на 1</li>
+                            <li>
+                                Представим правило перехода для машины Тьюринга, решающей эту задачу:
+                                $$q_0\# \rightarrow q_Z1L$$
+                            </li>
+                            <li>Правило гласит, что нужно записать $1$ в начальную позицию, сдвинуться на ячейку влево и завершить работу</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Пример $2$</h4>
+                        <ul>
+                            <li>Представим набор правил перехода для решения аналогичной задачи, но с увеличением на $2$:</li>
+                            $$
+                            q_0\# \rightarrow q_11L\\
+                            q_1\# \rightarrow q_Z1L\\
+                            $$
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Пример $3$</h4>
+                        <ul>
+                            <li>Представим набор правил перехода для решения аналогичной задачи, но с записью новой единицы справа:</li>
+                            $$
+                            q_0\# \rightarrow q_1\#R\\
+                            q_11 \rightarrow q_11R\\
+                            q_1\# \rightarrow q_21L\\
+                            q_21 \rightarrow q_21L\\
+                            q_2\# \rightarrow q_Z\#N
+                            $$
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Табличная запись</h4>
+                        <ul>
+                            <li>Можно представить эти правила в виде таблицы</li>
+                        </ul>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <th></th> <th>$\#$</th> <th>$1$</th>
+                                </tr>
+                                <tr>
+                                    <th scope="row">$q_0$</th> <td>$q_1\#R$</td> <td>$-$</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">$q_1$</th> <td>$q_21L$</td> <td>$q_11R$</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">$q_2$</th> <td>$q_Z\#N$</td> <td>$q_21L$</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+                    <section>
+                        <h4>Табличная запись</h4>
+                        <ul>
+                            <li>Прочерк в таблице означает, что данная комбинация символа и состояния никогда не достигается</li>
+                            <li>Из того факта, что правила переходов удобно представлять в виде таблицы, можно понять, что количество правил переходов ограничено сверху количеством состояний, умноженным на количество символов ленточного алфавита</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Граф переходов</h4>
+                        <p>
+                            <img src="10/Transition_graph.png">
+                        </p>
+                    </section>
+                    <section>
+                        <h4>Формальное определение</h4>
+                        <p align="left">
+                            Машину Тьюринга $T$ можно определить как следующий кортеж:
+                            $$T = (\Gamma, \Sigma, Q, Q_0, Q_Z, \delta),$$
+                            где:
+                            <ul>
+                                <li>$\Gamma$ – ленточный алфавит</li>
+                                <li>$\Sigma$ – входной алфавит ($\Sigma \subseteq \Gamma$)</li>
+                                <li>$Q$ – множество состояний машины</li>
+                            </ul>
+                        </p>
+                    </section>
+                    <section>
+                        <h4>Формальное определение</h4>
+                        <ul>
+                            <li>$Q_0$ и $Q_Z$ – множества начальных и конечных состояний машины соответственно</li>
+                            <li>
+                                $\delta$ – множество правил переходов, при этом:
+                                $$\delta: (Q \setminus Q_Z) \times \Gamma \rightarrow Q \times \Gamma \times \{L, N, R\}$$
+                            </li>
+                            <li>Стоит также отметить, что все множества, входящие в состав МТ, конечны</li>
+                        </ul> 
+                    </section>
+                    <section>
+                        <h4>Свойства</h4>
+                        <p align="left">Основное свойство машины Тьюринга выражено <b>Тезисом Тьюринга</b>:</p>
+                        <em>Если для вычисления некоторой функции существует алгоритм, значения этой функции могут быть вычислены с помощью машины Тьюринга</em>
+                    </section>
+                    <section>
+                        <h4>Свойства</h4>
+                        <ul>
+                            <li>Таким образом, Тезис Тьюринга гласит, что любой алгоритм может быть запрограммирован на машине Тьюринга, это называется <b>полнота по Тьюрингу</b></li>
+                            <li>В частности, алгоритм работы самой машины Тьюринга также может быть запрограммирован на машине Тьюринга, т.е. машина может моделировать сама себя</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Применения</h4>
+                        <ul>
+                            <li>Чтобы доказать, что некоторая система (например, язык программирования) может выполнить любой существующий алгоритм, достаточно показать, что с помощью этой системы можно моделировать работу машины Тьюринга</li>
+                            <li>Такая система называется <b>Тьюринг-полной</b></li>
+                            <li>Чтобы доказать, что не существует алгоритма, решающего какую-либо проблему, достаточно показать, что решение проблемы нельзя получить на машине Тьюринга</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Примеры Тьюринг-полных систем</h4>
+                        <ul>
+                            <li>Все современные ЯП (SQL не входит в это понятие)</li>
+                            <li>Машина Поста</li>
+                            <li>Нормальные алгоритмы Маркова</li>
+                            <li>Игра &laquo;Жизнь&raquo;</li>
+                        </ul>
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h4>Машина Поста</h4>
+                        <ul>
+                            <li>В 1936 году (после Тьюринга) Эмиль Пост предложил свой вариант абстрактной вычислительной машины</li>
+                            <li>Машина Поста во многом похожа на машину Тьюринга, но имеет более простую систему команд</li>
+                            <li>В её состав так же входят бесконечная лента, разделённая на ячейки и головка, последовательно перемещающаяся по ней</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Отличия</h4>
+                        <ul>
+                            <li>Алфавит состоит всего из двух символов: $1$ и $0$, при этом $0$ также играет роль пустого символа</li>
+                            <li>Все команды в программе делятся на $6$ типов и пронумерованы</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Типы команд</h4>
+                        <ol>
+                            <li>$Vj$ – установить $1$ и перейти к $j$-ой строке программы</li>
+                            <li>$Xj$ – установить $0$ и перейти к $j$-ой строке программы</li>
+                            <li>$\leftarrow j$ – сдвинуться влево и перейти к $j$-ой строке программы</li>
+                            <li>$\rightarrow j$ – сдвинуться вправо и перейти к $j$-ой строке программы</li>
+                        </ol>
+                    </section>
+                    <section>
+                        <h4>Типы команд</h4>
+                        <ol start="5">                            
+                            <li>$?j_1:j_2$ – если в ячейке $0$ перейти к строке $j_1$ иначе перейти к строке $j_2$</li>
+                            <li>$!$ – остановить выполнение</li>
+                        </ol>
+                    </section>
+                    <section>
+                        <h4>Пример</h4>
+                        <p align="left">В качестве примера напишем программу для дозаписи $1$ справа</p>
+                        <ol>
+                            <li>$\rightarrow 2$</li>
+                            <li>$?3:1$</li>
+                            <li>$V4$</li>
+                            <li>$\leftarrow 5$</li>
+                            <li>$?6:4$</li>
+                            <li>$!$</li>
+                        </ol>
+                    </section>
+                    <section>
+                        <h4>Вывод</h4>
+                        <ul>
+                            <li>Несмотря на простоту, машина Поста является полной по Тьюрингу, что в очередной раз показывает, насколько простого инструментария достаточно, чтобы иметь возможность выполнить любой существующий алгоритм</li>
+                        </ul>
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h4>Нормальные алгоритмы Маркова</h4>
+                        <ul>
+                            <li>В конце 1940-ых годов А.А. Марков ввёл понятие нормального алгоритма</li>
+                            <li>Нормальные алгоритмы так же, как и машины Тьюринга и Поста, могут использоваться для формализации понятия алгоритма в целом</li>
+                            <li>Нормальные алгоритмы Маркова (НАМ) являются полной по Тьюрингу системой, хотя не включают в своё описание никаких механических устройств наподобие ленты или головки</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Способ задания</h4>
+                        <ul>
+                            <li>НАМ предназначены для обработки символьных строк в каком-либо алфавите</li>
+                            <li>Конкретный алгоритм определяется <b>алфавитом</b> и <b>схемой</b> – упорядоченным набором <b>формул подстановки</b></li>
+                            <li>Формула подстановки – запись вида $L \rightarrow D$ или $L \rightarrow \cdot D$, где $L$ и $D$ – произвольные слова алфавита</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Принцип работы</h4>
+                        <ul>
+                            <li>Изначально на вход алгоиртму подаётся некоторая строка</li>
+                            <li>На каждом шаге выполнения из всех формул подстановки выбирается первая (по порядку), левая часть которой совпадет с какой-то частью текущей строки</li>
+                            <li>Если такая формула найдена, то часть текущей строки, совпадающая с левой часть формулы, заменяется на правую часть формулы</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Принцип работы</h4>
+                        <ul>
+                            <li>Если же подходящая формула не найдена, алгоритм завершает работу</li>
+                            <li>После замены алгоритм переходит к следующему шагу, если в выбранной формуле использовано $\rightarrow$ и останавливается, если использовано $\rightarrow \cdot$</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Пример $1$</h4>
+                        <p align="left">Алгоритм дописывания $1$ справа в НАМ задаётся тривиально (здесь $\Lambda$ – пустая строка)</p>
+                        <ol>
+                            <li>$1 \Lambda \rightarrow \cdot 11$</li>
+                            <li>$\Lambda \rightarrow \cdot 1$</li>
+                        </ol>
+                    </section>
+                    <section>
+                        <h4>Пример $2$</h4>
+                        <div class="container">
+                            <div class="col">
+                                <ol>
+                                    <li>$|b\ \ \to\ ba|$</li>
+                                    <li>$ab\ \to\ ba$</li>
+                                    <li>$b\ \ \ \to \Lambda$</li>
+                                    <li>$*|\ \ \to\ b*$</li>
+                                    <li>$*\ \ \ \to\ c$</li>
+                                    <li>$|c\ \ \to\ c$</li>
+                                    <li>$ac\ \to\ c|$</li>
+                                    <li>$c\ \ \ \to\cdot \Lambda$</li>
+                                </ol>
+                            </div>
+                            <div class="col">
+                                <p class="fragment step-fade-out">$|*||$</p>
+                                <p class="fragment step-fade-in-then-out">$|b*|$</p>
+                                <p class="fragment step-fade-in-then-out">$ba|*|$</p>
+                                <p class="fragment step-fade-in-then-out">$a|*|$</p>
+                                <p class="fragment step-fade-in-then-out">$a|b*$</p>
+                                <p class="fragment step-fade-in-then-out">$aba|*$</p>
+                                <p class="fragment step-fade-in-then-out">$baa|*$</p>
+                                <p class="fragment step-fade-in-then-out">$aa|*$</p>
+                                <p class="fragment step-fade-in-then-out">$aa|c$</p>
+                                <p class="fragment step-fade-in-then-out">$aac$</p>
+                                <p class="fragment step-fade-in-then-out">$ac|$</p>
+                                <p class="fragment step-fade-in-then-out">$c||$</p>
+                                <p class="fragment step-fade-in-then-out">$||$</p>
+                            </div>
+                        </div>
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h4>Полезные источники</h4>
+                        <ol>
+                            <li><b>EN</b> Robin Gandy. The universal Turing Machine: A Half-Century Survey. Глава 2 – Очень подробно и понятно про роль машин Тьюринга в алгоритмизации</li>
+                            <li><b>RU</b> <a href='https://wiki.livid.pp.ru/students/cs/lectures/a.html'>Подробная статья</a> про все три системы</li>
+                            <li><b>RU</b> <a href='https://youtu.be/ZOOQzu72jfI'>Лекция</a> про машину Тьюринга от преподавателя из МФТИ</li>
+                            <li><b>RU</b> <a href='https://youtube.com/playlist?list=PLDrmKwRSNx7I2op8eTvzREIU-Sfz2FIt6&si=Ks-Qi9fpWc4BSejb'>Цикл лекций</a> по АиТВ от профессора Кузнецова из ВШЭ (по машине Тьюринга первые две)</li>
+                        </ol>
+                    </section>
+                    <section>
+                        <h4>Полезные источники</h4>
+                        <ol start="6">
+                            <li><b>RU</b> <a href='https://youtu.be/jP3ceURvIYc'>Научно-популярное видео</a> по теме (среди прочего показаны машина Тьюринга и игра &laquo;Жизнь&raquo;)</li>
+                            <li><b>EN</b> <a href='https://turingmachine.io/'>Эмулятор</a> машины Тьюринга (1)</li>
+                            <li><b>EN</b> <a href='https://turingmachinesimulator.com/'>Эмулятор</a> машины Тьюринга (2)</li>
+                            <li><b>EN</b> <a href='https://math.hws.edu/eck/js/turing-machine/TM.html'>Эмулятор</a> машины Тьюринга (3)</li>
+                            <li><b>RU</b> <a href='https://post.dmtry.me/post.html'>Эмулятор</a> машины Поста</li>
+                            <li><b>RU</b> <a href='https://cmcmsu.info/1course/alg.schema.nam.htm#'>Эмулятор</a> НАМ (1)</li>
+                            <li><b>RU</b> <a href='http://grep.cs.msu.ru/AaAL.js/NAM.html'>Эмулятор</a> НАМ (2)</li>
+                        </ol>
+                    </section>
+                </section>
+            </div>
+        </div>
+
+		<script src="../dist/reveal.js"></script>
+		<script src="../plugin/notes/notes.js"></script>
+		<script src="../plugin/markdown/markdown.js"></script>
+		<script src="../plugin/highlight/highlight.js"></script>
+		<script src="../plugin/math/math.js"></script>
+		<script>
+			// More info about initialization & config:
+			// - https://revealjs.com/initialization/
+			// - https://revealjs.com/config/
+			Reveal.initialize({
+				hash: true,
+
+				// Learn about plugins: https://revealjs.com/plugins/
+				plugins: [ RevealMath.KaTeX, RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.MathJax2 ]
+			});
+		</script>
+	</body>
+</html>
