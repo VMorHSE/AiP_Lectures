@@ -64,7 +64,7 @@
                         <ul>
                             <li>Частой задачей в вычислительной технике является обработка некоторых последовательностей</li>
                             <li>Мы уже рассмотрели сортировку, поиск и т.п.</li>
-                            <li>Но последовательности могут содержать не только неокторые объекты, но также, например, действия пользователя</li>
+                            <li>Но последовательности могут содержать не только неокторые сравнимые объекты, но также, например, действия пользователя</li>
                             <li>В таких случаях важно понять, является ли заданная последовательность &laquo;действий&raquo; <b>корректной</b> для конкретного исполнителя</li>
                         </ul>
                     </section>
@@ -167,8 +167,8 @@
                     <section>
                         <h4>Состояния</h4>
                         <ul>
-                            <li>Состояние $q1$ называется <b>начальным</b>, это точка входа</li>
-                            <li>Состояние $q4$ — <b>конечное</b> или <b>принимающее</b></li>
+                            <li>Состояние $q_0$ называется <b>начальным</b>, это точка входа</li>
+                            <li>Состояние $q_3$ — <b>конечное</b> или <b>принимающее</b></li>
                             <li>Когда автомат достигает конечного состояния, считав при этом всю строку, это значит, что строка <b>принята</b></li>
                         </ul>
                     </section>
@@ -225,11 +225,11 @@
                     <section>
                         <h3>Пример функции переходов</h3>
                         <p align="left">Приведём пример функции переходов для калькулятора</p>
-                        <p>$\delta(q_1, 0..9) = q_2$</p>
+                        <p>$\delta(q_0, 0..9) = q_1$</p>
+                        <p>$\delta(q_1, 0..9) = q_1$</p>
+                        <p>$\delta(q_1, \{+, -, *, /\}) = q_2$</p>
                         <p>$\delta(q_2, 0..9) = q_2$</p>
-                        <p>$\delta(q_2, \{+, -, *, /\}) = q_3$</p>
-                        <p>$\delta(q_3, 0..9) = q_3$</p>
-                        <p>$\delta(q_3, =) = q_4$</p>
+                        <p>$\delta(q_2, =) = q_3$</p>
                     </section>
                     <section>
                         <h3>Замечание</h3>
@@ -240,9 +240,26 @@
                         </ul>
                     </section>
                     <section>
+                        <h3>Табличное представление</h3>
+                        <table>
+                            <tr>
+                                <th>$q_i \backslash \Sigma_j$</th> <th>$0$</th> <th>$1$</th> <th>$2$</th> <th>$3$</th> <th>$...$</th> <th>$+$</th> <th>$-$</th> <th>$*$</th> <th>$/$</th> <th>$=$</th>
+                            </tr>
+                            <tr>
+                                <th>$q_0$</th> <td>$q_1$</td> <td>$q_1$</td> <td>$q_1$</td> <td>$q_1$</td> <td>$...$</td> <td>-</td> <td>-</td> <td>-</td> <td>-</td> <td>-</td>
+                            </tr>
+                            <tr>
+                                <th>$q_1$</th> <td>$q_1$</td> <td>$q_1$</td> <td>$q_1$</td> <td>$q_1$</td> <td>$...$</td> <td>$q_2$</td> <td>$q_2$</td> <td>$q_2$</td> <td>$q_2$</td> <td>-</td>
+                            </tr>
+                            <tr>
+                                <th>$q_2$</th> <td>$q_2$</td> <td>$q_2$</td> <td>$q_2$</td> <td>$q_2$</td> <td>$...$</td> <td>-</td> <td>-</td> <td>-</td> <td>-</td> <td>$q_3$</td>
+                            </tr>
+                        </table>
+                    </section>
+                    <section>
                         <h3>Определение</h3>
                         <ul>
-                            <li>Итак, детерминированный конечный атомат представлен следующей пятёркой:</li>
+                            <li>Итак, детерминированный конечный автомат представлен следующей пятёркой:</li>
                             $$M = (Q, q_0, A, \Sigma, \delta)$$
                             <li>Автомат начинает работу в начальном состоянии и работает, пока не закончится строка или не встретится &laquo;неожиданный&raquo; символ</li>
                             <li>Если в конце работы автомата он находится в конечном состоянии, строка принимается</li>
@@ -428,12 +445,72 @@
                 </section>
                 <section>
                     <section>
+                        <h3>Другие применения конечных автоматов</h3>
+                        <ul>
+                            <li>Как уже было отмечено, конечные автоматы имеют множество применений</li>
+                            <li>Ещё одно из них — <b>регулярные выражения</b></li>
+                            <li>В действительности для регулярных выражений строятся более сложные конечные автоматы (недетерминированные)</li>
+                            <li>Однако в данной лекции мы ограничимся упрощённым вариантом</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h3>Упрощение</h3>
+                        <ul>
+                            <li>Мы рассмотрим упрощённый аналог регулярных выражений — глобы (globs)</li>
+                            <li>Это специальные выражения, которые используются командными оболочками (например, bash) для выполнения команд над группами файлов</li>
+                            <li>К примеру, чтобы скопировать все текстовые файлы в папку folder, в bash можно написать</li>
+                        </ul>
+                        <pre><code data-trim class="bash">
+                            cp *.txt folder
+                        </code></pre>
+                    </section>
+                    <section>
+                        <h3>Обработка глобов</h3>
+                        <ul>
+                            <li>В действительности при обработке глобов ДКА не используются</li>
+                            <li>Однако теоретически нет никаких препятствий такой реализации</li>
+                            <li>Символ $*$ означает любое количество любых символов ($0$ или больше)</li>
+                            <li>Символ $?$ означает ровно один любой символ</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h3>Пример</h3>
+                        <p align="left">Попробуем построить конечный автомат, соответствующий выражению <code data-trim class="bash">*.t?t</code></p>
+                        <p>
+                            <img src="09/glob_match_simple.png">
+                        </p>
+                    </section>
+                    <section>
+                        <h3>Обсуждение</h3>
+                        <ul>
+                            <li>Наш автомат примет строки <code data-trim class="bash">file.txt</code>, <code data-trim class="bash">aaa.tst</code>, <code data-trim class="bash">0123.tat</code> и т.д.</li>
+                            <li>Однако этой функциональности недостаточно</li>
+                            <li>Выражение <code data-trim class="bash">*.t?t</code> соответствует также строкам <code data-trim class="bash">file.tat.tot.txt</code>, <code data-trim class="bash">abc.tbt.tct</code> и т.п.</li>
+                            <li>Но наш автомат не принимает такие строки</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h3>Модификация</h3>
+                        <p align="left">Модифицируем наш автомат, чтобы он корректно принимал все строки, соответствующие выражению <code data-trim class="bash">*.t?t</code></p>
+                        <p>
+                            <img src="09/glob_match_mod.png">
+                        </p>
+                    </section>
+                </section>
+                <section>
+                    <section>
                         <h4>Полезные источники</h4>
                         <ol>
                             <li><b>RU</b> Томас Х. Кормен, Чарльз И. Лейзерсон, Рональд Л. Ривест, Клиффорд Штайн. Алгоритмы: построение и анализ, 3-е издание. Раздел 32.3. – Основная книга нашего курса.</li>
                             <li><b>RU</b> А. Ахо, Дж. Ульман. Теория синтаксического анализа, перевода и компиляции. — Очень подробный разбор с математическими выводами.</li>
-                            <li><b>EN</b> <a href='https://magjac.com/graphviz-visual-editor/?dot=digraph%20finite_state_machine%20%7B%0A%09fontname%3D%22Helvetica%2CArial%2Csans-serif%22%0A%09node%20%5Bfontname%3D%22Helvetica%2CArial%2Csans-serif%22%5D%0A%09edge%20%5Bfontname%3D%22Helvetica%2CArial%2Csans-serif%22%5D%0A%09rankdir%3DLR%3B%0A%09node%20%5Bshape%20%3D%20doublecircle%5D%3B%20q5%3B%0A%09node%20%5Bshape%20%3D%20circle%5D%3B%0A%09%0A%20%20%20%20source%20%5Blabel%3D%22%22%2C%20shape%3Dnone%2C%20height%3D0%2C%20width%3D0%2C%20style%3Dinvis%5D%3B%0A%09%0A%09source%20-%3E%20q0%3B%0A%09q0%20-%3E%20q1%20%5Blabel%20%3D%20%22a%22%5D%3B%0A%09q1%20-%3E%20q2%20%5Blabel%20%3D%20%22b%22%5D%3B%0A%09q2%20-%3E%20q3%20%5Blabel%20%3D%20%22a%22%5D%3B%0A%09q3%20-%3E%20q4%20%5Blabel%20%3D%20%22b%22%5D%3B%0A%09q4%20-%3E%20q5%20%5Blabel%20%3D%20%22c%22%5D%3B%0A%09q4%20-%3E%20q3%20%5Blabel%20%3D%20%22a%22%2C%20constraint%20%3D%20false%5D%3B%0A%09q5%20-%3E%20q1%20%5Blabel%20%3D%20%22a%22%2C%20constraint%20%3D%20false%5D%3B%0A%09q3%20-%3E%20q1%20%5Blabel%20%3D%20%22a%22%2C%20constraint%20%3D%20false%5D%3B%0A%09q1%20-%3E%20q1%20%5Blabel%20%3D%20%22a%22%2C%20constraint%20%3D%20false%5D%3B%0A%7D'>Удобный конструктор</a> конечных автоматов</li>
                             <li><b>EN</b> <a href='https://swtch.com/~rsc/regexp/regexp1.html'>Статья</a> о реализации регулярных выражений в различных ЯП</li>
+                        </ol>
+                    </section>
+                    <section>
+                        <h4>Полезные источники</h4>
+                        <ol start="4">
+                            <li><b>EN</b> <a href='https://magjac.com/graphviz-visual-editor/?dot=digraph%20finite_state_machine%20%7B%0A%09fontname%3D%22Helvetica%2CArial%2Csans-serif%22%0A%09node%20%5Bfontname%3D%22Helvetica%2CArial%2Csans-serif%22%5D%0A%09edge%20%5Bfontname%3D%22Helvetica%2CArial%2Csans-serif%22%5D%0A%09rankdir%3DLR%3B%0A%09node%20%5Bshape%20%3D%20doublecircle%5D%3B%20q5%3B%0A%09node%20%5Bshape%20%3D%20circle%5D%3B%0A%09%0A%20%20%20%20source%20%5Blabel%3D%22%22%2C%20shape%3Dnone%2C%20height%3D0%2C%20width%3D0%2C%20style%3Dinvis%5D%3B%0A%09%0A%09source%20-%3E%20q0%3B%0A%09q0%20-%3E%20q1%20%5Blabel%20%3D%20%22a%22%5D%3B%0A%09q1%20-%3E%20q2%20%5Blabel%20%3D%20%22b%22%5D%3B%0A%09q2%20-%3E%20q3%20%5Blabel%20%3D%20%22a%22%5D%3B%0A%09q3%20-%3E%20q4%20%5Blabel%20%3D%20%22b%22%5D%3B%0A%09q4%20-%3E%20q5%20%5Blabel%20%3D%20%22c%22%5D%3B%0A%09q4%20-%3E%20q3%20%5Blabel%20%3D%20%22a%22%2C%20constraint%20%3D%20false%5D%3B%0A%09q5%20-%3E%20q1%20%5Blabel%20%3D%20%22a%22%2C%20constraint%20%3D%20false%5D%3B%0A%09q3%20-%3E%20q1%20%5Blabel%20%3D%20%22a%22%2C%20constraint%20%3D%20false%5D%3B%0A%09q1%20-%3E%20q1%20%5Blabel%20%3D%20%22a%22%2C%20constraint%20%3D%20false%5D%3B%0A%7D'>Пример</a> конечного автомата с лекции, доступный для изменения</li>
+                            <li><b>EN</b> <a href='https://magjac.com/graphviz-visual-editor/?dot=digraph%20finite_state_machine%20%7B%0D%0A%09fontname%3D%22Helvetica%2CArial%2Csans-serif%22%0D%0A%09node%20%5Bfontname%3D%22Helvetica%2CArial%2Csans-serif%22%5D%0D%0A%09edge%20%5Bfontname%3D%22Helvetica%2CArial%2Csans-serif%22%5D%0D%0A%09rankdir%3DLR%3B%0D%0A%09node%20%5Bshape%20%3D%20doublecircle%5D%3B%20q4%3B%0D%0A%09node%20%5Bshape%20%3D%20circle%5D%3B%0D%0A%09%0D%0A%09source%20%5Blabel%3D%22%22%2C%20shape%3Dnone%2C%20height%3D0%2C%20width%3D0%2C%20style%3Dinvis%5D%3B%0D%0A%09source%20-%3E%20q0%0D%0A%09q0%20-%3E%20q1%20%5Blabel%20%3D%20%22.%22%20fontsize%3D60.0%20fontname%3D%22Times-Roman%22%5D%3B%0D%0A%09q0%20-%3E%20q0%20%5Blabel%20%3D%20%22%26Sigma%3B%5C%5C%7B.%7D%22%20fontsize%3D24.0%20fontname%3D%22Times-Roman%22%5D%3B%0D%0A%09q1%20-%3E%20q2%20%5Blabel%20%3D%20%22t%22%20fontsize%3D24.0%20fontname%3D%22Times-Roman%22%5D%3B%0D%0A%09q2%20-%3E%20q3%20%5Blabel%20%3D%20%22%26Sigma%3B%22%20fontsize%3D24.0%20fontname%3D%22Times-Roman%22%5D%3B%0D%0A%09q3%20-%3E%20q4%20%5Blabel%20%3D%20%22t%22%20fontsize%3D24.0%20fontname%3D%22Times-Roman%22%20constraint%3Dfalse%2C%5D%3B%0D%0A%09%0D%0A%09q1%20-%3E%20q0%20%5Blabel%20%3D%20%22%26Sigma%3B%5C%5C%7Bt%7D%22%20fontsize%3D24.0%20fontname%3D%22Times-Roman%22%5D%3B%0D%0A%09q3%20-%3E%20q0%20%5Blabel%20%3D%20%22%26Sigma%3B%5C%5C%7Bt%7D%22%20fontsize%3D24.0%20fontname%3D%22Times-Roman%22%5D%3B%0D%0A%09q4%20-%3E%20q0%20%5Blabel%20%3D%20%22%26Sigma%3B%22%20fontsize%3D24.0%20fontname%3D%22Times-Roman%22%20constraint%3Dfalse%5D%3B%0D%0A%7D'>Пример</a> другого конечного автомата с лекции, доступный для изменения</li>
                         </ol>
                     </section>
                 </section>
