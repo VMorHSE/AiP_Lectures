@@ -205,7 +205,7 @@
                     <section>
                         <h4>Пример задачи</h4>
                         <p align="left">
-                            В качестве примера возьмём маленький экземпляр задачи о рюкзаке со следующими параметрами: $W = 4$
+                            В качестве примера возьмём маленький экземпляр задачи о рюкзаке со следующими параметрами: $W = 13$
                         </p>
                         <table>
                             <tr>
@@ -214,20 +214,23 @@
                                 <td>$2$</td>
                                 <td>$3$</td>
                                 <td>$4$</td>
+                                <td>$5$</td>
                             </tr>
                             <tr>
                                 <th>$v_i$</th>
-                                <td>$2$</td>
-                                <td>$2$</td>
+                                <td>$3$</td>
                                 <td>$4$</td>
-                                <td>$4$</td>
+                                <td>$5$</td>
+                                <td>$6$</td>
+                                <td>$7$</td>
                             </tr>
                             <tr>
                                 <th>$w_i$</th>
-                                <td>$1$</td>
                                 <td>$2$</td>
-                                <td>$1$</td>
-                                <td>$2$</td>
+                                <td>$3$</td>
+                                <td>$3$</td>
+                                <td>$5$</td>
+                                <td>$5$</td>
                             </tr>
                         </table>
                     </section>
@@ -248,29 +251,81 @@
                         <h4>Улучшенное решение</h4>
                         <ul>
                             <li>В целях улучшения производительности можно построить решение, используя таблицу размером $n \times W$ и постепенно заполняя её. Его сложность – $O(nW)$.</li>
-                            <li>Построим такую таблицу для задачи из предыдущего примера</li>
+                            <li>Построим такую таблицу для задачи из предыдущего примера (некоторые столбцы опустим для сокращения)</li>
                         </ul>
                     </section>
                     <section>
                         <h4>Таблица динамического программирования</h4>
                         <table>
                             <tr>
-                                <th>$i \backslash j$</th> <th>$0$</th> <th>$1$</th> <th>$2$</th> <th>$3$</th> <th>$4$</th>
+                                <th>$i \backslash j$</th>
+                                <th>$0$</th><th>$1$</th><th>$2$</th><th>$3$</th><th>$5$</th>
+                                <th>$7$</th><th>$8$</th><th>$10$</th><th>$13$</th>
                             </tr>
                             <tr>
-                                <th>$0$</th> <td>$0$</td> <td>$0$</td> <td>$0$</td> <td>$0$</td> <td>$0$</td>
+                                <th>$0$</th>
+                                <td>$0$</td><td>$0$</td><td>$0$</td><td>$0$</td><td>$0$</td>
+                                <td>$0$</td><td>$0$</td><td>$0$</td><td>$0$</td>
                             </tr>
                             <tr>
-                                <th>$1$</th> <td>$0$</td> <td>$2$</td> <td>$2$</td> <td>$2$</td> <td>$2$</td>
+                                <th>$1$</th>
+                                <td>$0$</td>
+                                <td><font color="red">$0$</font></td>
+                                <td>$3$</td>
+                                <td>$3$</td>
+                                <td>$3$</td>
+                                <td>$3$</td>
+                                <td>$3$</td>
+                                <td>$3$</td>
+                                <td>$3$</td>
                             </tr>
                             <tr>
-                                <th>$2$</th> <td>$0$</td> <td>$2$</td> <td><font color="red">$2$</font></td> <td>$4$</td> <td>$4$</td>
+                                <th>$2$</th>
+                                <td>$0$</td>
+                                <td><font color="red">$0$</font></td>
+                                <td><font color="red">$3$</font></td>
+                                <td>$4$</td>
+                                <td>$7$</td>
+                                <td><font color="red">$7$</font></td>
+                                <td>$7$</td>
+                                <td>$7$</td>
+                                <td>$7$</td>
                             </tr>
                             <tr>
-                                <th>$3$</th> <td>$0$</td> <td><font color="red">$4$</font></td> <td>$6$</td> <td><font color="red">$6$</font></td> <td>$8$</td>
+                                <th>$3$</th>
+                                <td>$0$</td>
+                                <td><font color="red">$0$</font></td>
+                                <td><font color="red">$3$</font></td>
+                                <td>$5$</td>
+                                <td><font color="red">$8$</font></td>
+                                <td><font color="red">$9$</font></td>
+                                <td>$12$</td>
+                                <td><font color="red">$12$</font></td>
+                                <td>$12$</td>
                             </tr>
                             <tr>
-                                <th>$4$</th> <td>$0$</td> <td><font color="red">$4$</font></td> <td><font color="red">$6$</font></td> <td><font color="red">$8$</font></td> <td>$10$</td>
+                                <th>$4$</th>
+                                <td>$0$</td>
+                                <td><font color="red">$0$</font></td>
+                                <td><font color="red">$3$</font></td>
+                                <td><font color="red">$5$</font></td>
+                                <td><font color="red">$8$</font></td>
+                                <td><font color="red">$9$</font></td>
+                                <td>$12$</td>
+                                <td><font color="red">$14$</font></td>
+                                <td>$18$</td>
+                            </tr>
+                            <tr>
+                                <th>$5$</th>
+                                <td>$0$</td>
+                                <td><font color="red">$0$</font></td>
+                                <td><font color="red">$3$</font></td>
+                                <td><font color="red">$5$</font></td>
+                                <td><font color="red">$8$</font></td>
+                                <td><font color="red">$10$</font></td>
+                                <td><font color="red">$12$</font></td>
+                                <td><font color="red">$15$</font></td>
+                                <td>$19$</td>
                             </tr>
                         </table>
                     </section>
@@ -428,7 +483,7 @@
                         <h4>Таблица динамического программирования</h4>
                         <table>
                             <tr>
-                                <th>$i \backslash j$</th> <th>$1$</th> <th>$2$</th> <th>$3$</th> <th>$4$</th>
+                                <th>$i \backslash j$</th> <th>$1$</th> <th>$2$</th> <th>$3$</th> <th>$4$</th> 
                             </tr>
                             <tr>
                                 <th>$1$</th> <td>$0$</td> <td>$392$</td> <td>$168$</td> <td>$356$</td>
